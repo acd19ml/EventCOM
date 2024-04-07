@@ -1,17 +1,46 @@
+# version: '3'
+# services:
+#   mongodb:
+#     image: mongo
+#     container_name: mongodb
+#     restart: always
+#     env_file:
+#       - ./app.env
+
+#     ports:
+#       - '6000:27017'
+#     volumes:
+#       - mongodb:/data/db
+
+#   redis:
+#     image: redis:alpine
+#     container_name: redis
+#     ports:
+#       - '6379:6379'
+#     volumes:
+#       - redisDB:/data
+# volumes:
+#   mongodb:
+#   redisDB:
 version: '3'
 services:
+  goapp:
+    build: .
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mongodb
+      - redis
   mongodb:
     image: mongo
     container_name: mongodb
     restart: always
     env_file:
       - ./app.env
-
     ports:
       - '6000:27017'
     volumes:
       - mongodb:/data/db
-
   redis:
     image: redis:alpine
     container_name: redis

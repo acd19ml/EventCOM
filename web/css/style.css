@@ -1,0 +1,11 @@
+/* web/css/style.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 40px;
+    color: #333;
+}
+
+#dataDisplay {
+    white-space: pre-wrap; /* 让JSON格式化显示 */
+}

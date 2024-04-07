@@ -6,8 +6,16 @@ option go_package = "github.com/wpcodevo/golang-mongodb/pb";
 
 message UpdatePostRequest {
   string Id = 1;
-  optional string Title = 2;
-  optional string Content = 3;
-  optional string Image = 4;
-  optional string User = 5;
+  optional string Email = 2;
+  optional string Name = 3;
+  optional string Role = 4;
+  optional string Organisation = 5;
+  optional string Contact = 6;
+  repeated string KindofTalk = 7;
+  optional string Title = 8;
+  optional string Description = 9;
+  repeated string Dates = 10;
+  optional string ExtraDetails = 11;
+  optional string Location = 12;
+  optional string Status = 13;
 }

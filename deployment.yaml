@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventcom-goapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: eventcom-goapp
+  template:
+    metadata:
+      labels:
+        app: eventcom-goapp
+    spec:
+      containers:
+      - name: eventcom-goapp
+        image: gcr.io/tidy-arena-419316/eventcom-goapp:v1
+        ports:
+        - containerPort: 8080

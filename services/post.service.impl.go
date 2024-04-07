@@ -35,9 +35,9 @@ func (p *PostServiceImpl) CreatePost(post *models.CreatePostRequest) (*models.DB
 	}
 
 	opt := options.Index()
-	opt.SetUnique(true)
+	opt.SetUnique(true) // need to consider when more than one title is null
 
-	index := mongo.IndexModel{Keys: bson.M{"title": 1}, Options: opt}
+	index := mongo.IndexModel{Keys: bson.M{"title": 1}, Options: opt} 
 
 	if _, err := p.postCollection.Indexes().CreateOne(p.ctx, index); err != nil {
 		return nil, errors.New("could not create index for title")

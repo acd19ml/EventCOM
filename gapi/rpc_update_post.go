@@ -16,10 +16,18 @@ func (postServer *PostServer) UpdatePost(ctx context.Context, req *pb.UpdatePost
 	postId := req.GetId()
 
 	post := &models.UpdatePost{
-		Title:     req.GetTitle(),
-		Content:   req.GetContent(),
-		Image:     req.GetImage(),
-		User:      req.GetUser(),
+		Email:    req.GetEmail(),
+		Name:     req.GetName(),
+		Role:     req.GetRole(),
+		Organisation: req.GetOrganisation(),
+		Contact: req.GetContact(),
+		KindofTalk: req.GetKindofTalk(),
+		Title:    req.GetTitle(),
+		Description:  req.GetDescription(),
+		Dates:    req.GetDates(),
+		ExtraDetails: req.GetExtraDetails(),
+		Location: req.GetLocation(),
+		Status:   req.GetStatus(),
 		UpdatedAt: time.Now(),
 	}
 
@@ -35,10 +43,18 @@ func (postServer *PostServer) UpdatePost(ctx context.Context, req *pb.UpdatePost
 	res := &pb.PostResponse{
 		Post: &pb.Post{
 			Id:        updatedPost.Id.Hex(),
+			Email:     updatedPost.Email,
+			Name:      updatedPost.Name,
+			Role:      updatedPost.Role,
+			Organisation : updatedPost.Organisation,
+			Contact:  updatedPost.Contact,
+			KindofTalk: updatedPost.KindofTalk,
 			Title:     updatedPost.Title,
-			Content:   updatedPost.Content,
-			Image:     updatedPost.Image,
-			User:      updatedPost.User,
+			Description: updatedPost.Description,
+			Dates:     updatedPost.Dates,
+			ExtraDetails: updatedPost.ExtraDetails,
+			Location:  updatedPost.Location,
+			Status:    updatedPost.Status,
 			CreatedAt: timestamppb.New(updatedPost.CreateAt),
 			UpdatedAt: timestamppb.New(updatedPost.UpdatedAt),
 		},

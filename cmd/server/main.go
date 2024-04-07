@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -68,9 +69,25 @@ func init() {
 	fmt.Println("MongoDB successfully connected...")
 
 	// Connect to Redis
+
+	// 假设config已经被正确加载，config.RedisUri包含了完整的Redis URL
+	redisURI := config.RedisUri
+
+	// 解析URI以提取主机名和端口
+	u, err := url.Parse(redisURI)
+	if err != nil {
+		log.Fatalf("Failed to parse REDIS_CLOUD_URL: %v", err)
+	}
+
+	password, _ := u.User.Password()
 	redisclient = redis.NewClient(&redis.Options{
-		Addr: config.RedisUri,
+		Addr:     u.Host,   // 使用解析出的主机名和端口
+		Password: password, // 使用从URL中提取的密码
 	})
+
+	// redisclient = redis.NewClient(&redis.Options{
+	// 	Addr: config.RedisUri,
+	// })
 
 	if _, err := redisclient.Ping(ctx).Result(); err != nil {
 		panic(err)

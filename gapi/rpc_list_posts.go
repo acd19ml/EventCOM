@@ -19,9 +19,18 @@ func (postServer *PostServer) GetPosts(req *pb.GetPostsRequest, stream pb.PostSe
 	for _, post := range posts {
 		stream.Send(&pb.Post{
 			Id:        post.Id.Hex(),
+			Email:     post.Email,
+			Name:      post.Name,
+			Role:      post.Role,
+			Organisation : post.Organisation,
+			Contact:  post.Contact,
+			KindofTalk: post.KindofTalk,
 			Title:     post.Title,
-			Content:   post.Content,
-			Image:     post.Image,
+			Description: post.Description,
+			Dates:     post.Dates,
+			ExtraDetails: post.ExtraDetails,
+			Location:  post.Location,
+			Status:    post.Status,
 			CreatedAt: timestamppb.New(post.CreateAt),
 			UpdatedAt: timestamppb.New(post.UpdatedAt),
 		})

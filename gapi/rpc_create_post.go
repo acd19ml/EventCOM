@@ -14,10 +14,18 @@ import (
 func (postServer *PostServer) CreatePost(ctx context.Context, req *pb.CreatePostRequest) (*pb.PostResponse, error) {
 
 	post := &models.CreatePostRequest{
-		Title:   req.GetTitle(),
-		Content: req.GetContent(),
-		Image:   req.GetImage(),
-		User:    req.GetUser(),
+		Email:    req.GetEmail(),
+		Name:     req.GetName(),
+		Role:     req.GetRole(),
+		Organisation: req.GetOrganisation(),
+		Contact: req.GetContact(),
+		KindofTalk: req.GetKindofTalk(),
+		Title:    req.GetTitle(),
+		Description:  req.GetDescription(),
+		Dates:    req.GetDates(),
+		ExtraDetails: req.GetExtraDetails(),
+		Location: req.GetLocation(),
+		Status:   req.GetStatus(),
 	}
 
 	newPost, err := postServer.postService.CreatePost(post)
@@ -33,9 +41,18 @@ func (postServer *PostServer) CreatePost(ctx context.Context, req *pb.CreatePost
 	res := &pb.PostResponse{
 		Post: &pb.Post{
 			Id:        newPost.Id.Hex(),
+			Email:     newPost.Email,
+			Name:      newPost.Name,
+			Role:      newPost.Role,
+			Organisation : newPost.Organisation,
+			Contact:  newPost.Contact,
+			KindofTalk: newPost.KindofTalk,
 			Title:     newPost.Title,
-			Content:   newPost.Content,
-			User:      newPost.User,
+			Description: newPost.Description,
+			Dates:     newPost.Dates,
+			ExtraDetails: newPost.ExtraDetails,
+			Location:  newPost.Location,
+			Status:    newPost.Status,
 			CreatedAt: timestamppb.New(newPost.CreateAt),
 			UpdatedAt: timestamppb.New(newPost.UpdatedAt),
 		},
