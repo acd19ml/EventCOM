@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/wpcodevo/golang-mongodb/models"
-	"github.com/wpcodevo/golang-mongodb/services"
+	"github.com/acd19ml/EventCOM/models"
+	"github.com/acd19ml/EventCOM/services"
 )
 
 type UserController struct {

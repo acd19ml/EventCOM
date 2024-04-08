@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/wpcodevo/golang-mongodb/client"
-	"github.com/wpcodevo/golang-mongodb/pb"
+	"github.com/acd19ml/EventCOM/client"
+	"github.com/acd19ml/EventCOM/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

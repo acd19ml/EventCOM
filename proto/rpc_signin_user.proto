@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package pb;
 
-option go_package = "github.com/wpcodevo/golang-mongodb/pb";
+option go_package = "github.com/acd19ml/EventCOM/pb";
 
 message SignInUserInput {
   string email = 1;

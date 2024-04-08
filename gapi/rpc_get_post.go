@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/wpcodevo/golang-mongodb/pb"
+	"github.com/acd19ml/EventCOM/pb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"

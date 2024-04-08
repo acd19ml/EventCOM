@@ -2,9 +2,9 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/wpcodevo/golang-mongodb/controllers"
-	"github.com/wpcodevo/golang-mongodb/middleware"
-	"github.com/wpcodevo/golang-mongodb/services"
+	"github.com/acd19ml/EventCOM/controllers"
+	"github.com/acd19ml/EventCOM/middleware"
+	"github.com/acd19ml/EventCOM/services"
 )
 
 type UserRouteController struct {

@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/wpcodevo/golang-mongodb/config"
-	"github.com/wpcodevo/golang-mongodb/services"
-	"github.com/wpcodevo/golang-mongodb/utils"
+	"github.com/acd19ml/EventCOM/config"
+	"github.com/acd19ml/EventCOM/services"
+	"github.com/acd19ml/EventCOM/utils"
 )
 
 func DeserializeUser(userService services.UserService) gin.HandlerFunc {

@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/thanhpk/randstr"
-	"github.com/wpcodevo/golang-mongodb/models"
-	"github.com/wpcodevo/golang-mongodb/pb"
-	"github.com/wpcodevo/golang-mongodb/utils"
+	"github.com/acd19ml/EventCOM/models"
+	"github.com/acd19ml/EventCOM/pb"
+	"github.com/acd19ml/EventCOM/utils"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

@@ -1,11 +1,44 @@
-/* web/css/style.css */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 40px;
-    color: #333;
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #2363eb;
 }
 
-#dataDisplay {
-    white-space: pre-wrap; /* 让JSON格式化显示 */
+form {
+    display: flex;
+    flex-direction: column;
+    background-color: #e5e7eb;
+    padding: 20px;
+    border-radius: 10px;
 }
+
+input {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px;
+    background-color: #f9d13e;
+    color: #2363eb;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ebc22c;
+}
+
+a {
+    color: #2363eb;
+}
+
+h1, p {
+    color: white;
+}
+

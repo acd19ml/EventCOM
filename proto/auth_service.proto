@@ -6,7 +6,7 @@ import "rpc_signin_user.proto";
 import "rpc_signup_user.proto";
 import "user.proto";
 
-option go_package = "github.com/wpcodevo/golang-mongodb/pb";
+option go_package = "github.com/acd19ml/EventCOM/pb";
 
 service AuthService {
   rpc SignUpUser(SignUpUserInput) returns (GenericResponse) {}

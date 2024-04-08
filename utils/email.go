@@ -10,8 +10,8 @@ import (
 	"text/template"
 
 	"github.com/k3a/html2text"
-	"github.com/wpcodevo/golang-mongodb/config"
-	"github.com/wpcodevo/golang-mongodb/models"
+	"github.com/acd19ml/EventCOM/config"
+	"github.com/acd19ml/EventCOM/models"
 	"gopkg.in/gomail.v2"
 )
 

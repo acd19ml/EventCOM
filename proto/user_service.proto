@@ -4,7 +4,7 @@ package pb;
 
 import "user.proto";
 
-option go_package = "github.com/wpcodevo/golang-mongodb/pb";
+option go_package = "github.com/acd19ml/EventCOM/pb";
 
 service UserService {
   rpc GetMe(GetMeRequest) returns (UserResponse) {}

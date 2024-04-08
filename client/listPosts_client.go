@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/wpcodevo/golang-mongodb/pb"
+	"github.com/acd19ml/EventCOM/pb"
 	"google.golang.org/grpc"
 )
 

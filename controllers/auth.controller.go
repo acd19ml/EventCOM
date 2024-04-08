@@ -10,10 +10,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/thanhpk/randstr"
-	"github.com/wpcodevo/golang-mongodb/config"
-	"github.com/wpcodevo/golang-mongodb/models"
-	"github.com/wpcodevo/golang-mongodb/services"
-	"github.com/wpcodevo/golang-mongodb/utils"
+	"github.com/acd19ml/EventCOM/config"
+	"github.com/acd19ml/EventCOM/models"
+	"github.com/acd19ml/EventCOM/services"
+	"github.com/acd19ml/EventCOM/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -78,7 +78,7 @@ func (ac *AuthController) SignUpUser(ctx *gin.Context) {
 
 	// 👇 Send Email
 	emailData := utils.EmailData{
-		URL:       config.Origin + "/verifyemail/" + code,
+		URL:       config.Origin + "/verifyemail.html?code=" + code,
 		FirstName: firstName,
 		Subject:   "Your account verification code",
 	}

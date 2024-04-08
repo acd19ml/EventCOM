@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/wpcodevo/golang-mongodb/pb"
-	"github.com/wpcodevo/golang-mongodb/utils"
+	"github.com/acd19ml/EventCOM/pb"
+	"github.com/acd19ml/EventCOM/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

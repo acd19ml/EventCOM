@@ -11,12 +11,12 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
-	"github.com/wpcodevo/golang-mongodb/config"
-	"github.com/wpcodevo/golang-mongodb/controllers"
-	"github.com/wpcodevo/golang-mongodb/gapi"
-	"github.com/wpcodevo/golang-mongodb/pb"
-	"github.com/wpcodevo/golang-mongodb/routes"
-	"github.com/wpcodevo/golang-mongodb/services"
+	"github.com/acd19ml/EventCOM/config"
+	"github.com/acd19ml/EventCOM/controllers"
+	"github.com/acd19ml/EventCOM/gapi"
+	"github.com/acd19ml/EventCOM/pb"
+	"github.com/acd19ml/EventCOM/routes"
+	"github.com/acd19ml/EventCOM/services"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -128,8 +128,8 @@ func main() {
 
 	defer mongoclient.Disconnect(ctx)
 
-	// startGinServer(config)
-	startGrpcServer(config)
+	startGinServer(config)
+	// startGrpcServer(config)
 }
 
 func startGrpcServer(config config.Config) {
@@ -178,7 +178,10 @@ func startGinServer(config config.Config) {
 	}
 
 	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowOrigins = []string{config.Origin}
+	// corsConfig.AllowOrigins = []string{config.Origin}
+	corsConfig.AllowOrigins = []string{"http://localhost:8000", "http://localhost:3000"}
+	corsConfig.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"} 
+	corsConfig.AllowHeaders = []string{"Origin", "Content-Type", "Accept", "Authorization"}
 	corsConfig.AllowCredentials = true
 
 	server.Use(cors.New(corsConfig))

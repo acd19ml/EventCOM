@@ -1,4 +1,4 @@
-module github.com/wpcodevo/golang-mongodb
+module github.com/acd19ml/EventCOM
 
 go 1.18
 

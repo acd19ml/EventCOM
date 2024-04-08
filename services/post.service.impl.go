@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/wpcodevo/golang-mongodb/models"
-	"github.com/wpcodevo/golang-mongodb/utils"
+	"github.com/acd19ml/EventCOM/models"
+	"github.com/acd19ml/EventCOM/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

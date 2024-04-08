@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/wpcodevo/golang-mongodb/controllers"
+	"github.com/acd19ml/EventCOM/controllers"
 )
 
 type PostRouteController struct {
