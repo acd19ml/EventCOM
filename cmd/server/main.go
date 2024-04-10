@@ -44,6 +44,11 @@ var (
 	PostController      controllers.PostController
 	postCollection      *mongo.Collection
 	PostRouteController routes.PostRouteController
+
+	dateCollection      *mongo.Collection
+	DateService         services.DateService
+	DateController      controllers.DateController
+	DateRouteController routes.DateRouteController
 )
 
 func init() {
@@ -116,6 +121,13 @@ func init() {
 	PostController = controllers.NewPostController(postService)
 	PostRouteController = routes.NewPostControllerRoute(PostController)
 
+	dateCollection = mongoclient.Database("golang_mongodb").Collection("dates")
+	DateService = services.NewDateService(dateCollection, ctx)
+	DateController = controllers.NewDateController(DateService)
+	DateRouteController = routes.NewDateControllerRoute(DateController)
+
+
+
 	server = gin.Default()
 }
 
@@ -178,8 +190,7 @@ func startGinServer(config config.Config) {
 	}
 
 	corsConfig := cors.DefaultConfig()
-	// corsConfig.AllowOrigins = []string{config.Origin}
-	corsConfig.AllowOrigins = []string{"http://localhost:8000", "http://localhost:3000"}
+	corsConfig.AllowOrigins = []string{config.Origin}
 	corsConfig.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"} 
 	corsConfig.AllowHeaders = []string{"Origin", "Content-Type", "Accept", "Authorization"}
 	corsConfig.AllowCredentials = true
@@ -195,5 +206,7 @@ func startGinServer(config config.Config) {
 	UserRouteController.UserRoute(router, userService)
 	// 👇 Post Route
 	PostRouteController.PostRoute(router)
+	DateRouteController.DateRoute(router)
+
 	log.Fatal(server.Run(":" + config.Port))
 }

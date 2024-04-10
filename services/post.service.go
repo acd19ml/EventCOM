@@ -8,4 +8,5 @@ type PostService interface {
 	FindPostById(string) (*models.DBPost, error)
 	FindPosts(page int, limit int) ([]*models.DBPost, error)
 	DeletePost(string) error
+	UpdateTodos(postId string, todos []models.Todo) error
 }

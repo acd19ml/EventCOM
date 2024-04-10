@@ -153,3 +153,20 @@ func (p *PostServiceImpl) DeletePost(id string) error {
 
 	return nil
 }
+
+func (p *PostServiceImpl) UpdateTodos(postId string, todos []models.Todo) error {
+    postObjId, err := primitive.ObjectIDFromHex(postId)
+    if err != nil {
+        return err
+    }
+
+    // 更新数据库中对应Post的Todos
+    update := bson.M{
+        "$set": bson.M{"todos": todos},
+    }
+
+    _, err = p.postCollection.UpdateOne(p.ctx, bson.M{"_id": postObjId}, update)
+    return err
+}
+
+

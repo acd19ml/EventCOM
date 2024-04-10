@@ -19,14 +19,21 @@ func NewPostController(postService services.PostService) PostController {
 }
 
 func (pc *PostController) CreatePost(ctx *gin.Context) {
-	var post *models.CreatePostRequest
+	var post models.CreatePostRequest
 
 	if err := ctx.ShouldBindJSON(&post); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-
-	newPost, err := pc.postService.CreatePost(post)
+	post.SetDefaultStatus()
+	// Initialize Todos with default values if empty
+    if len(post.Todos) == 0 {
+        post.Todos = []models.Todo{
+            {TitleProposed: false, ContactSpeaker: false, TimeConfirmed: false, VenueBooked: false, WebUpdated: false, CalenderInvite: false},
+            // Add more default todos as needed
+        }
+    }
+	newPost, err := pc.postService.CreatePost(&post)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "title already exists") {
@@ -117,3 +124,23 @@ func (pc *PostController) DeletePost(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusNoContent, nil)
 }
+
+func (pc *PostController) UpdateTodos(ctx *gin.Context) {
+    postId := ctx.Param("postId")
+
+    var todos []models.Todo
+    if err := ctx.ShouldBindJSON(&todos); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid request body"})
+        return
+    }
+
+    // 调用服务层方法更新Post的Todos
+    err := pc.postService.UpdateTodos(postId, todos)
+    if err != nil {
+        ctx.JSON(http.StatusBadGateway, gin.H{"status": "fail", "message": err.Error()})
+        return
+    }
+
+    ctx.JSON(http.StatusOK, gin.H{"status": "success", "message": "Todos updated successfully"})
+}
+
