@@ -27,10 +27,14 @@ func (pc *PostController) CreatePost(ctx *gin.Context) {
 	}
 	post.SetDefaultStatus()
 	// Initialize Todos with default values if empty
-    if len(post.Todos) == 0 {
-        post.Todos = []models.Todo{
-            {TitleProposed: false, ContactSpeaker: false, TimeConfirmed: false, VenueBooked: false, WebUpdated: false, CalenderInvite: false},
-            // Add more default todos as needed
+    if (post.Todos == models.Todo{}) { // Check if Todos is its zero value
+        post.Todos = models.Todo{
+            TitleProposed:  false,
+            ContactSpeaker: false,
+            TimeConfirmed:  false,
+            VenueBooked:    false,
+            WebUpdated:     false,
+            CalenderInvite: false,
         }
     }
 	newPost, err := pc.postService.CreatePost(&post)
@@ -128,14 +132,13 @@ func (pc *PostController) DeletePost(ctx *gin.Context) {
 func (pc *PostController) UpdateTodos(ctx *gin.Context) {
     postId := ctx.Param("postId")
 
-    var todos []models.Todo
-    if err := ctx.ShouldBindJSON(&todos); err != nil {
+    var todo models.Todo
+    if err := ctx.ShouldBindJSON(&todo); err != nil {
         ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid request body"})
         return
     }
 
-    // 调用服务层方法更新Post的Todos
-    err := pc.postService.UpdateTodos(postId, todos)
+    err := pc.postService.UpdateTodos(postId, todo)
     if err != nil {
         ctx.JSON(http.StatusBadGateway, gin.H{"status": "fail", "message": err.Error()})
         return
@@ -143,4 +146,5 @@ func (pc *PostController) UpdateTodos(ctx *gin.Context) {
 
     ctx.JSON(http.StatusOK, gin.H{"status": "success", "message": "Todos updated successfully"})
 }
+
 

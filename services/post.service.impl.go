@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"time"
+	"log"
+
 
 	"github.com/acd19ml/EventCOM/models"
 	"github.com/acd19ml/EventCOM/utils"
@@ -154,19 +156,38 @@ func (p *PostServiceImpl) DeletePost(id string) error {
 	return nil
 }
 
-func (p *PostServiceImpl) UpdateTodos(postId string, todos []models.Todo) error {
+func (p *PostServiceImpl) UpdateTodos(postId string, todo models.Todo) error {
+    log.Printf("Updating todos for postId: %s with todo: %+v", postId, todo)
+
     postObjId, err := primitive.ObjectIDFromHex(postId)
     if err != nil {
+        log.Printf("Error converting postId to ObjectID: %v", err)
         return err
     }
 
-    // 更新数据库中对应Post的Todos
-    update := bson.M{
-        "$set": bson.M{"todos": todos},
+    update := bson.M{"$set": bson.M{"todos": todo}}
+    log.Printf("Constructed update operation: %+v", update)
+
+    result, err := p.postCollection.UpdateOne(p.ctx, bson.M{"_id": postObjId}, update)
+    if err != nil {
+        log.Printf("Error updating todos: %v", err)
+        return err
     }
 
-    _, err = p.postCollection.UpdateOne(p.ctx, bson.M{"_id": postObjId}, update)
-    return err
+    log.Printf("Matched %v documents and updated %v documents.", result.MatchedCount, result.ModifiedCount)
+
+    if result.MatchedCount == 0 {
+        return errors.New("no post found with the given ID")
+    }
+
+    if result.ModifiedCount == 0 {
+        return errors.New("todos were not updated")
+    }
+
+    return nil
 }
+
+
+
 
 

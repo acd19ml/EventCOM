@@ -19,7 +19,7 @@ type CreatePostRequest struct {
 	ExtraDetails string    `json:"extra_details,omitempty" bson:"extra_details,omitempty"`
 	Location  string    `json:"location,omitempty" bson:"location,omitempty"`
 	Status    string    `json:"status,omitempty" bson:"status,omitempty"`
-	Todos       []Todo      `json:"todos" bson:"todos"` // Embedding Todos directly
+	Todos       Todo      `json:"todos" bson:"todos"` // Embedding Todos directly
 	CreateAt  time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
 }
@@ -38,7 +38,7 @@ type DBPost struct {
 	ExtraDetails string    `json:"extra_details,omitempty" bson:"extra_details,omitempty"`
 	Location  string    `json:"location,omitempty" bson:"location,omitempty"`
 	Status    string    `json:"status,omitempty" bson:"status,omitempty"`
-	Todos       []Todo      `json:"todos,omitempty" bson:"todos,omitempty"` // Embedding Todos directly
+	Todos       Todo      `json:"todos,omitempty" bson:"todos,omitempty"` // Embedding Todos directly
 	CreateAt  time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	UpdatedAt time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
 }
@@ -56,14 +56,14 @@ type UpdatePost struct {
 	ExtraDetails string    `json:"extra_details,omitempty" bson:"extra_details,omitempty"`
 	Location  string    `json:"location,omitempty" bson:"location,omitempty"`
 	Status    string    `json:"status,omitempty" bson:"status,omitempty"`
-	Todos       []Todo      `json:"todos,omitempty" bson:"todos,omitempty"` // Embedding Todos directly
+	Todos       Todo      `json:"todos,omitempty" bson:"todos,omitempty"` // Embedding Todos directly
 	CreateAt  time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	UpdatedAt time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
 }
 
 // Todo represents a task related to preparing and organizing a talk.
 type Todo struct {
-	ID             primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"` 
+	// ID             primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"` 
 	TitleProposed  bool               `json:"title_proposed" bson:"title_proposed"`
 	ContactSpeaker bool               `json:"contact_speaker" bson:"contact_speaker"`
 	TimeConfirmed  bool               `json:"time_confirmed" bson:"time_confirmed"`
@@ -73,7 +73,7 @@ type Todo struct {
 }
 
 type UpdateTodoRequest struct {
-	TodoID         string 			  `json:"todoId"`         // Todo项的唯一标识符
+	// TodoID         string 			  `json:"todoId"`         // Todo项的唯一标识符
 	TitleProposed  bool               `json:"title_proposed" bson:"title_proposed"`
 	ContactSpeaker bool               `json:"contact_speaker" bson:"contact_speaker"`
 	TimeConfirmed  bool               `json:"time_confirmed" bson:"time_confirmed"`

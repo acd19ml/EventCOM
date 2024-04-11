@@ -1,3 +1,5 @@
+const postsTodoState = {};
+
 document.addEventListener('DOMContentLoaded', () => {
   fetch('./components/header.html')
         .then(response => response.text())
@@ -11,10 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const headerPlaceholder = document.getElementById('footer-placeholder');
             headerPlaceholder.innerHTML = data;
         });
+    
   fetch('http://localhost:8000/api/posts/',{
         method: "GET",
           })
-      .then(response => response.json())
+      .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
       .then(data => {
           const posts = data.data;
           posts.forEach((post, index) => {
@@ -23,35 +31,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 "in progress": "inProgressAccordion",
                 "completed": "completedAccordion",
             };
-            const todosArray = Array.isArray(post.todos) ? post.todos : [];
-            const todosHTML = post.todos.map((todo, index) => {
-                return `
+            const isInProgress = post.status.toLowerCase() === 'in progress';
+
+            const todosHTML =  isInProgress ?
+                 `
                     <div class="todo-item">
-                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "title_proposed" id="todo-title-proposed-${index}" ${todo.title_proposed ? 'checked' : ''}>
+                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "title_proposed" id="todo-title-proposed-${index}" ${post.todos.title_proposed ? 'checked' : ''}>
                         <label for="todo-title-proposed-${index}">Title Proposed</label>
                     </div>
                     <div class="todo-item">
-                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "contact_speaker" id="todo-contact-speaker-${index}" ${todo.contact_speaker ? 'checked' : ''}>
+                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "contact_speaker" id="todo-contact-speaker-${index}" ${post.todos.contact_speaker ? 'checked' : ''}>
                         <label for="todo-contact-speaker-${index}">Contact Speaker</label>
                     </div>
                     <div class="todo-item">
-                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "time_confirmed" id="todo-time-confirmed-${index}" ${todo.time_confirmed ? 'checked' : ''}>
+                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "time_confirmed" id="todo-time-confirmed-${index}" ${post.todos.time_confirmed ? 'checked' : ''}>
                         <label for="todo-time-confirmed-${index}">Time Confirmed</label>
                     </div>
                     <div class="todo-item">
-                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "venue_booked" id="todo-venue-booked-${index}" ${todo.venue_booked ? 'checked' : ''}>
+                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "venue_booked" id="todo-venue-booked-${index}" ${post.todos.venue_booked ? 'checked' : ''}>
                         <label for="todo-venue-booked-${index}">Book Venue</label>
                     </div>
                     <div class="todo-item">
-                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "web_updated" id="todo-web-updated-${index}" ${todo.web_updated ? 'checked' : ''}>
+                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "web_updated" id="todo-web-updated-${index}" ${post.todos.web_updated ? 'checked' : ''}>
                         <label for="todo-web-updated-${index}">Update COM Opportunities Hub/ Founders Club</label>
                     </div>
                     <div class="todo-item">
-                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "calender_invite" id="todo-calender-invite-${index}" ${todo.calender_invite ? 'checked' : ''}>
+                        <input type="checkbox" class="todo-checkbox" data-postid="${post.id}" data-field= "calender_invite" id="todo-calender-invite-${index}" ${post.todos.calender_invite ? 'checked' : ''}>
                         <label for="todo-calender-invite-${index}">Calendar Invite</label>
                     </div>
-                `;
-            }).join('');
+                `: '';
+
             
             const containerId = statusMap[post.status.toLowerCase()] || "interestedAccordion"; // 默认为interested状态
             const postsContainer = document.getElementById(containerId);
@@ -124,12 +133,18 @@ document.body.addEventListener('click', function(e) {
 
 document.body.addEventListener('change', function(e) {
     if (e.target.classList.contains('todo-checkbox')) {
-        const postId = e.target.getAttribute('data-postid');
-        const field = e.target.getAttribute('data-field');
-        const isChecked = e.target.checked;
-        const updateData = { [field]: isChecked };
+        const postId = e.target.dataset.postid; // 获取 postId
+        // 构造所有复选框的当前状态
+        const updateData = {
+            title_proposed: document.querySelector(`input[data-postid="${postId}"][data-field="title_proposed"]`).checked,
+            contact_speaker: document.querySelector(`input[data-postid="${postId}"][data-field="contact_speaker"]`).checked,
+            time_confirmed: document.querySelector(`input[data-postid="${postId}"][data-field="time_confirmed"]`).checked,
+            venue_booked: document.querySelector(`input[data-postid="${postId}"][data-field="venue_booked"]`).checked,
+            web_updated: document.querySelector(`input[data-postid="${postId}"][data-field="web_updated"]`).checked,
+            calender_invite: document.querySelector(`input[data-postid="${postId}"][data-field="calender_invite"]`).checked
+        };
 
-        // 发送请求更新todo项
+        // 发送 PATCH 请求更新所有复选框的状态
         fetch(`http://localhost:8000/api/posts/${postId}/todos`, {
             method: 'PATCH',
             headers: {
@@ -137,11 +152,18 @@ document.body.addEventListener('change', function(e) {
             },
             body: JSON.stringify(updateData)
         })
-        .then(response => response.json())
-        .then(data => console.log('Todo updated:', data))
-        .catch(error => console.error('Error updating todo:', error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => console.log('Todos updated:', data))
+        .catch(error => console.error('Error updating todos:', error));
     }
 });
+
+
 
 
 function moveToCorrectSection(postElement, newStatus) {
