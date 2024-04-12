@@ -7,10 +7,10 @@ import (
 )
 //email, name, role, organisation, contact details, kind of talk I like to give, Talk Title, Talk Description, choose Possible dates and extra
 type CreatePostRequest struct {
-	Email     string    `json:"email" bson:"email" binding:"required"`
-	Name      string    `json:"name" bson:"name" binding:"required"`
-	Role      string    `json:"role" bson:"role" binding:"required"`
-	Organisation string    `json:"organisation" bson:"organisation" binding:"required"`
+	Email     string    `json:"email,omitempty" bson:"email,omitempty"`
+	Name      string    `json:"name,omitempty" bson:"name,omitempty"`
+	Role      string    `json:"role,omitempty" bson:"role,omitempty"`
+	Organisation string    `json:"organisation,omitempty" bson:"organisation,omitempty"`
 	Contact   string    `json:"contact,omitempty" bson:"contact,omitempty"`
 	KindofTalk []string    `json:"kind_of_talk,omitempty" bson:"kind_of_talk,omitempty"`
 	Title     string    `json:"title,omitempty" bson:"title,omitempty"`

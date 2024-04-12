@@ -49,6 +49,11 @@ var (
 	DateService         services.DateService
 	DateController      controllers.DateController
 	DateRouteController routes.DateRouteController
+
+	talkCollection      *mongo.Collection
+	TalkService         services.TalkService
+	TalkController      controllers.TalkController
+	TalkRouteController routes.TalkRouteController
 )
 
 func init() {
@@ -125,6 +130,11 @@ func init() {
 	DateService = services.NewDateService(dateCollection, ctx)
 	DateController = controllers.NewDateController(DateService)
 	DateRouteController = routes.NewDateControllerRoute(DateController)
+
+	talkCollection = mongoclient.Database("golang_mongodb").Collection("talks")
+	TalkService = services.NewTalkService(talkCollection, ctx)
+	TalkController = controllers.NewTalkController(TalkService)
+	TalkRouteController = routes.NewTalkControllerRoute(TalkController)
 
 
 
@@ -207,6 +217,8 @@ func startGinServer(config config.Config) {
 	// 👇 Post Route
 	PostRouteController.PostRoute(router)
 	DateRouteController.DateRoute(router)
+	TalkRouteController.TalkRoute(router)
+
 
 	log.Fatal(server.Run(":" + config.Port))
 }

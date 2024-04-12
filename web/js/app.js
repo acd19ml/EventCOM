@@ -1,5 +1,3 @@
-const postsTodoState = {};
-
 document.addEventListener('DOMContentLoaded', () => {
   fetch('./components/header.html')
         .then(response => response.text())
@@ -13,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const headerPlaceholder = document.getElementById('footer-placeholder');
             headerPlaceholder.innerHTML = data;
         });
-    
+
   fetch('http://localhost:8000/api/posts/',{
         method: "GET",
           })
@@ -91,8 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
                               <strong>Status:</strong> ${post.status}<br>
                               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <button class="btn btn-danger delete-btn" data-id="${post.id}">Delete</button>
+                                <button class="btn btn-secondary edit-btn" data-id="${post.id}">Edit</button>
                                 <div class="button-container">
-                                    ${post.status.toLowerCase() === 'interested' ? `<button class="btn btn-primary progress-btn" data-id="${post.id}">In Progress</button>` : ''}
+                                    ${post.status.toLowerCase() === 'interested' ? `<button class="btn btn-primary progress-btn" data-id="${post.id}">Agreed</button>` : ''}
                                     ${post.status.toLowerCase() === 'in progress' ? `
                                     <button class="btn btn-success complete-btn" data-id="${post.id}">Completed</button>
                                     <button class="btn btn-secondary interested-btn" data-id="${post.id}">Interested</button>
@@ -128,6 +127,9 @@ document.body.addEventListener('click', function(e) {
         updatePostStatus(postId, 'interested');
     } else if (e.target.classList.contains('new-talk-btn')) {
         createNewTalkBasedOnPost(postId);
+    } else if (e.target.classList.contains('edit-btn')) {
+        const postId = e.target.getAttribute('data-id');
+        window.location.href = `form.html?postId=${postId}`;
     }
 });
 
@@ -281,5 +283,68 @@ function createNewTalkBasedOnPost(postId) {
     })
     .catch(error => console.error('Error creating new talk based on post:', error));
 }
+
+// Function to load talks from the server and populate the table
+function loadTalks() {
+    fetch('http://localhost:8000/api/talks/')
+      .then(response => response.json())
+      .then(result => {
+        if (result.status === "success" && Array.isArray(result.data)) {
+          const talksTableBody = document.getElementById('talksTableBody');
+          talksTableBody.innerHTML = ''; // Clear existing entries
+          result.data.forEach((talk, index) => {
+            const row = `
+              <tr>
+                <th scope="row">${index + 1}</th>
+                <td><input type="text" class="form-control" value="${talk.detail}" id="talkDetail${talk.id}"></td>
+                <td>
+                  <button class="btn btn-success" onclick="updateTalk('${talk.id}')">Save</button>
+                  <button class="btn btn-danger" onclick="deleteTalk('${talk.id}')">Delete</button>
+                </td>
+              </tr>
+            `;
+            talksTableBody.innerHTML += row;
+          });
+        } else {
+          console.error('No data available or incorrect format:', result);
+        }
+      })
+      .catch(error => console.error('Error fetching talks:', error));
+}
+
+  
+  document.getElementById('editTalksModal').addEventListener('show.bs.modal', loadTalks);
+
+  function addNewTalk() {
+    const detail = prompt("Enter new talk detail:");
+    if (detail) {
+      fetch('http://localhost:8000/api/talks/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ detail }),
+      })
+      .then(response => response.json())
+      .then(() => loadTalks()) // Reload talks to show the new entry
+      .catch(error => console.error('Error adding new talk:', error));
+    }
+  }
+
+  function updateTalk(talkId) {
+    const detail = document.getElementById(`talkDetail${talkId}`).value;
+    fetch(`http://localhost:8000/api/talks/${talkId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ detail }),
+    })
+    .then(response => response.json())
+    .then(() => alert('Talk updated successfully'))
+    .catch(error => console.error('Error updating talk:', error));
+  }
+  
+
 
 
