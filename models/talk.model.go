@@ -19,5 +19,5 @@ type DBTalk struct {
 
 type UpdateTalk struct {
 	Talk     string    `json:"talk,omitempty" bson:"talk,omitempty"`
-	Detail	 string    `json:"detail,omitempty" bson:"detail,omitempty"` 
+	Detail	 string    `json:"detail,omitempty" bson:"detail,omitempty"`
 }

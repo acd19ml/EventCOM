@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"html/template"
 	"log"
 	"net"
 	"net/http"
@@ -54,9 +55,12 @@ var (
 	TalkService         services.TalkService
 	TalkController      controllers.TalkController
 	TalkRouteController routes.TalkRouteController
+
+	temp *template.Template
 )
 
 func init() {
+	temp = template.Must(template.ParseGlob("templates/*.html"))
 	config, err := config.LoadConfig(".")
 	if err != nil {
 		log.Fatal("Could not load environment variables", err)
@@ -114,7 +118,7 @@ func init() {
 	authCollection = mongoclient.Database("golang_mongodb").Collection("users")
 	userService = services.NewUserServiceImpl(authCollection, ctx)
 	authService = services.NewAuthService(authCollection, ctx)
-	AuthController = controllers.NewAuthController(authService, userService, ctx, authCollection)
+	AuthController = controllers.NewAuthController(authService, userService, ctx, authCollection, temp)
 	AuthRouteController = routes.NewAuthRouteController(AuthController)
 
 	UserController = controllers.NewUserController(userService)
@@ -215,7 +219,7 @@ func startGinServer(config config.Config) {
 	AuthRouteController.AuthRoute(router, userService)
 	UserRouteController.UserRoute(router, userService)
 	// 👇 Post Route
-	PostRouteController.PostRoute(router)
+	PostRouteController.PostRoute(router, userService)
 	DateRouteController.DateRoute(router)
 	TalkRouteController.TalkRoute(router)
 

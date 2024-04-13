@@ -5,9 +5,11 @@ import (
 	"strconv"
 	"strings"
 
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/acd19ml/EventCOM/models"
 	"github.com/acd19ml/EventCOM/services"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type PostController struct {
@@ -25,6 +27,9 @@ func (pc *PostController) CreatePost(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
+	
+	const predefinedUserID = "66128277945dc259684b2111"	
+
 	post.SetDefaultStatus()
 	// Initialize Todos with default values if empty
     if (post.Todos == models.Todo{}) { // Check if Todos is its zero value
@@ -37,6 +42,14 @@ func (pc *PostController) CreatePost(ctx *gin.Context) {
             CalenderInvite: false,
         }
     }
+
+	userID, err := primitive.ObjectIDFromHex(predefinedUserID)
+    if err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid userID"})
+        return
+    }
+    post.UserID = userID
+
 	newPost, err := pc.postService.CreatePost(&post)
 
 	if err != nil {
@@ -88,28 +101,38 @@ func (pc *PostController) FindPostById(ctx *gin.Context) {
 }
 
 func (pc *PostController) FindPosts(ctx *gin.Context) {
-	var page = ctx.DefaultQuery("page", "1")
-	var limit = ctx.DefaultQuery("limit", "10")
+    var page = ctx.DefaultQuery("page", "1")
+    var limit = ctx.DefaultQuery("limit", "10")
 
-	intPage, err := strconv.Atoi(page)
-	if err != nil {
-		ctx.JSON(http.StatusBadGateway, gin.H{"status": "fail", "message": err.Error()})
-		return
-	}
+	userID, exists := ctx.Get("userID")
+    if !exists {
+		fmt.Println("UserID not found in context")
+        ctx.JSON(http.StatusUnauthorized, gin.H{"error": "user not authenticated"})
+        return
+    }
 
-	intLimit, err := strconv.Atoi(limit)
-	if err != nil {
-		ctx.JSON(http.StatusBadGateway, gin.H{"status": "fail", "message": err.Error()})
-		return
-	}
+    objUserID := userID.(primitive.ObjectID)  // 获取当前登录用户的 ObjectID
 
-	posts, err := pc.postService.FindPosts(intPage, intLimit)
-	if err != nil {
-		ctx.JSON(http.StatusBadGateway, gin.H{"status": "fail", "message": err.Error()})
-		return
-	}
+    intPage, err := strconv.Atoi(page)
+    if err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "invalid page number"})
+        return
+    }
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "success", "results": len(posts), "data": posts})
+    intLimit, err := strconv.Atoi(limit)
+    if err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "invalid limit value"})
+        return
+    }
+
+    // 从服务层获取帖子，使用预定义的用户ID进行过滤
+    posts, err := pc.postService.FindPosts(objUserID, intPage, intLimit)
+    if err != nil {
+        ctx.JSON(http.StatusBadGateway, gin.H{"status": "fail", "message": err.Error()})
+        return
+    }
+
+    ctx.JSON(http.StatusOK, gin.H{"status": "success", "results": len(posts), "data": posts})
 }
 
 func (pc *PostController) DeletePost(ctx *gin.Context) {

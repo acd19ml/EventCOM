@@ -3,6 +3,8 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/acd19ml/EventCOM/controllers"
+	"github.com/acd19ml/EventCOM/middleware"
+	"github.com/acd19ml/EventCOM/services"
 )
 
 type PostRouteController struct {
@@ -13,11 +15,12 @@ func NewPostControllerRoute(postController controllers.PostController) PostRoute
 	return PostRouteController{postController}
 }
 
-func (r *PostRouteController) PostRoute(rg *gin.RouterGroup) {
+func (r *PostRouteController) PostRoute(rg *gin.RouterGroup, userService services.UserService) {
 	router := rg.Group("/posts")
+	router.Use(middleware.DeserializeUser(userService))
+	router.POST("/", r.postController.CreatePost)	
 	router.GET("/", r.postController.FindPosts)
 	router.GET("/:postId", r.postController.FindPostById)
-	router.POST("/", r.postController.CreatePost)
 	router.PATCH("/:postId", r.postController.UpdatePost)
 	router.PATCH("/:postId/todos", r.postController.UpdateTodos)
 	router.DELETE("/:postId", r.postController.DeletePost)

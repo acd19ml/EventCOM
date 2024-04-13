@@ -3,11 +3,8 @@ package utils
 import (
 	"bytes"
 	"crypto/tls"
-	"fmt"
-	"log"
-	"os"
-	"path/filepath"
-	"text/template"
+	"log" 
+	"html/template"
 
 	"github.com/k3a/html2text"
 	"github.com/acd19ml/EventCOM/config"
@@ -22,29 +19,7 @@ type EmailData struct {
 }
 
 // 👇 Email template parser
-
-func ParseTemplateDir(dir string) (*template.Template, error) {
-	var paths []string
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !info.IsDir() {
-			paths = append(paths, path)
-		}
-		return nil
-	})
-
-	fmt.Println("Am parsing templates...")
-
-	if err != nil {
-		return nil, err
-	}
-
-	return template.ParseFiles(paths...)
-}
-
-func SendEmail(user *models.DBResponse, data *EmailData, templateName string) error {
+func SendEmail(user *models.DBResponse, data *EmailData, temp *template.Template, templateName string) error {
 	config, err := config.LoadConfig(".")
 
 	if err != nil {
@@ -61,14 +36,9 @@ func SendEmail(user *models.DBResponse, data *EmailData, templateName string) er
 
 	var body bytes.Buffer
 
-	template, err := ParseTemplateDir("templates")
-	if err != nil {
-		log.Fatal("Could not parse template", err)
+	if err := temp.ExecuteTemplate(&body, templateName, &data); err != nil {
+		log.Fatal("Could not execute template", err)
 	}
-
-	template = template.Lookup(templateName)
-	template.Execute(&body, &data)
-	fmt.Println(template.Name())
 
 	m := gomail.NewMessage()
 

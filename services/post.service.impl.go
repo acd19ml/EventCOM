@@ -27,14 +27,20 @@ func NewPostService(postCollection *mongo.Collection, ctx context.Context) PostS
 func (p *PostServiceImpl) CreatePost(post *models.CreatePostRequest) (*models.DBPost, error) {
 	post.CreateAt = time.Now()
 	post.UpdatedAt = post.CreateAt
+	
 	res, err := p.postCollection.InsertOne(p.ctx, post)
-
-	if err != nil {
-		if er, ok := err.(mongo.WriteException); ok && er.WriteErrors[0].Code == 11000 {
-			return nil, errors.New("post with that title already exists")
-		}
-		return nil, err
-	}
+    if err != nil {
+        if er, ok := err.(mongo.WriteException); ok && er.WriteErrors[0].Code == 11000 {
+            // If a duplicate title error occurs, modify the title and retry
+            post.Title = post.Title + "-new"
+            res, err = p.postCollection.InsertOne(p.ctx, post)
+            if err != nil {
+                return nil, err
+            }
+        } else {
+            return nil, err
+        }
+    }
 
 	opt := options.Index()
 	opt.SetUnique(true) // need to consider when more than one title is null
@@ -91,7 +97,7 @@ func (p *PostServiceImpl) FindPostById(id string) (*models.DBPost, error) {
 	return post, nil
 }
 
-func (p *PostServiceImpl) FindPosts(page int, limit int) ([]*models.DBPost, error) {
+func (p *PostServiceImpl) FindPosts(userID primitive.ObjectID, page int, limit int) ([]*models.DBPost, error) {
 	if page == 0 {
 		page = 1
 	}
@@ -107,7 +113,7 @@ func (p *PostServiceImpl) FindPosts(page int, limit int) ([]*models.DBPost, erro
 	opt.SetSkip(int64(skip))
 	opt.SetSort(bson.M{"created_at": -1})
 
-	query := bson.M{}
+	query := bson.M{"userId": userID}
 
 	cursor, err := p.postCollection.Find(p.ctx, query, &opt)
 	if err != nil {

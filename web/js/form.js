@@ -148,27 +148,47 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const queryParams = new URLSearchParams(window.location.search);
     const postId = queryParams.get('postId');
-    
     if (postId) {
-        fetch(`http://localhost:8000/api/posts/${postId}`)
+        populateForm(postId)
+    }
+    
+    
+});
+
+function populateForm(postId) {
+    fetch(`http://localhost:8000/api/posts/${postId}`)
         .then(response => response.json())
-        .then(data => {
-            // Fill the form with the post data
+        .then(response => {  // 注意这里改为处理response对象
+            const data = response.data;  // 提取嵌套的data对象
+            console.log("Fetched data for form population:", data); // Debugging: check the fetched data
             document.getElementById('email').value = data.email || '';
             document.getElementById('name').value = data.name || '';
             document.getElementById('role').value = data.role || '';
             document.getElementById('organization').value = data.organisation || '';
             document.getElementById('contact').value = data.contact || '';
-            document.getElementById('kind_of_talk').value = data.kind_of_talk || '';
-            document.getElementById('title').value = data.title || '';
-            document.getElementById('description').value = data.description || '';
-            document.getElementById('dates').value = data.dates || '';
+            document.getElementById('talkTitle').value = data.title || '';
+            document.getElementById('talkDescription').value = data.description || '';
             document.getElementById('extraInfo').value = data.extra_details || '';
 
-        })
-        .catch(error => console.error('Error fetching post details:', error));
-    }
-    
-});
+            // Assuming 'kind_of_talk' is an array and checkboxes are available
+            if (data.kind_of_talk) {
+                document.querySelectorAll('input[name="talks"]').forEach(checkbox => {
+                    if (data.kind_of_talk.includes(checkbox.value)) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
 
+            // Assuming 'dates' is an array and radio buttons are properly named
+            if (data.dates) {
+                data.dates.forEach(date => {
+                    const radio = document.querySelector(`input[type="radio"][value="${date}"]`);
+                    if (radio) radio.checked = true;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching post details:', error);
+        });
+}
 

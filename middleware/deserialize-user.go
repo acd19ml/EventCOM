@@ -44,6 +44,7 @@ func DeserializeUser(userService services.UserService) gin.HandlerFunc {
 		}
 
 		ctx.Set("currentUser", user)
+		ctx.Set("userID", user.ID)
 		ctx.Next()
 	}
 }

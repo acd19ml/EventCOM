@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
@@ -23,10 +24,11 @@ type AuthController struct {
 	userService services.UserService
 	ctx         context.Context
 	collection  *mongo.Collection
+	temp        *template.Template
 }
 
-func NewAuthController(authService services.AuthService, userService services.UserService, ctx context.Context, collection *mongo.Collection) AuthController {
-	return AuthController{authService, userService, ctx, collection}
+func NewAuthController(authService services.AuthService, userService services.UserService, ctx context.Context, collection *mongo.Collection, temp *template.Template) AuthController {
+	return AuthController{authService, userService, ctx, collection, temp}
 }
 
 func (ac *AuthController) SignUpUser(ctx *gin.Context) {
@@ -83,7 +85,7 @@ func (ac *AuthController) SignUpUser(ctx *gin.Context) {
 		Subject:   "Your account verification code",
 	}
 
-	err = utils.SendEmail(newUser, &emailData, "verificationCode.html")
+	err = utils.SendEmail(newUser, &emailData, ac.temp,"verificationCode.html")
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"status": "success", "message": "There was an error sending email"})
 		return
@@ -268,15 +270,57 @@ func (ac *AuthController) ForgotPassword(ctx *gin.Context) {
 
 	// 👇 Send Email
 	emailData := utils.EmailData{
-		URL:       config.Origin + "/forgotPassword/" + resetToken,
+		URL:       config.Origin + "/resetPassword.html?resetToken=" + resetToken,
 		FirstName: firstName,
 		Subject:   "Your password reset token (valid for 10min)",
 	}
 
-	err = utils.SendEmail(user, &emailData, "resetPassword.html")
+	err = utils.SendEmail(user, &emailData, ac.temp, "resetPassword.html")
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"status": "success", "message": "There was an error sending email"})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"status": "success", "message": message})
 }
+
+func (ac *AuthController) ResetPassword(ctx *gin.Context) {
+	var userCredential *models.ResetPasswordInput
+	resetToken := ctx.Params.ByName("resetToken")
+
+	if err := ctx.ShouldBindJSON(&userCredential); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": err.Error()})
+		return
+	}
+
+	if userCredential.Password != userCredential.PasswordConfirm {
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Passwords do not match"})
+		return
+	}
+
+	hashedPassword, _ := utils.HashPassword(userCredential.Password)
+
+	passwordResetToken := utils.Encode(resetToken)
+
+	// Update User in Database
+	query := bson.D{{Key: "passwordResetToken", Value: passwordResetToken}}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "password", Value: hashedPassword}}}, {Key: "$unset", Value: bson.D{{Key: "passwordResetToken", Value: ""}, {Key: "passwordResetAt", Value: ""}}}}
+	result, err := ac.collection.UpdateOne(ac.ctx, query, update)
+
+	if result.MatchedCount == 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "success", "message": "Token is invalid or has expired"})
+		return
+	}
+
+	if err != nil {
+		ctx.JSON(http.StatusForbidden, gin.H{"status": "success", "message": err.Error()})
+		return
+	}
+
+	ctx.SetCookie("access_token", "", -1, "/", "localhost", false, true)
+	ctx.SetCookie("refresh_token", "", -1, "/", "localhost", false, true)
+	ctx.SetCookie("logged_in", "", -1, "/", "localhost", false, true)
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "message": "Password data updated successfully"})
+}
+
+

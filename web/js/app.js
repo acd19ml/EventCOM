@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetch('http://localhost:8000/api/posts/',{
         method: "GET",
+        credentials: 'include'
           })
       .then(response => {
             if (!response.ok) {
@@ -62,9 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const containerId = statusMap[post.status.toLowerCase()] || "interestedAccordion"; // 默认为interested状态
             const postsContainer = document.getElementById(containerId);
-        
+            const link = `http://localhost:3000/form.html?postId=${post.id}`;
+            console.log(post.id)
             const postItem = `
-                <div class="accordion-item">
+                <div id="post-${post.id}" class="post-item accordion-item">
                     <h2 class="accordion-header" id="heading${index}">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}" aria-expanded="false" aria-controls="collapse${index}">
                             ${post.title}
@@ -72,22 +74,59 @@ document.addEventListener('DOMContentLoaded', () => {
                     </h2>
                     <div id="collapse${index}" class="accordion-collapse collapse" aria-labelledby="heading${index}" data-bs-parent="#${containerId}">
                         <div class="accordion-body">
-                              <div class="todos-container">
-                                ${todosHTML}
-                              </div>
-                              <strong>Email:</strong> ${post.email}<br>
-                              <strong>Name:</strong> ${post.name}<br>
-                              <strong>Role:</strong> ${post.role}<br>
-                              <strong>Organisation:</strong> ${post.organisation}<br>
-                              <strong>KindofTalks: ${post.kind_of_talk}<br>
-                              <strong>Title:</strong> ${post.title}<br>
-                              <strong>Description:</strong> ${post.description}<br>
-                              <strong>Dates:</strong> ${post.dates}<br>
-                              <strong>ExtraDetails:</strong> ${post.extra_details}<br>
-                              <strong>Contact:</strong> ${post.contact}<br>
-                              <strong>Location:</strong> ${post.location}<br>
-                              <strong>Status:</strong> ${post.status}<br>
-                              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <div class="todos-container">
+                            ${todosHTML}
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Email:</strong>
+                                <span class="col-md-10 post-email">${post.email}</span>
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Name:</strong>
+                                <span class="col-md-10 post-name">${post.name}</span>
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Role:</strong>
+                                <span class="col-md-10 post-role">${post.role}</span>
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Organisation:</strong>
+                                <span class="col-md-10 post-organisation">${post.organisation}</span>
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Kind of Talks:</strong>
+                                <span class="col-md-10 post-kind-of-talk">${post.kind_of_talk}</span>
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Title:</strong>
+                                <span class="col-md-10 post-title">${post.title}</span>
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Description:</strong>
+                                <span class="col-md-10 post-description">${post.description}</span>
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Dates:</strong>
+                                <span class="col-md-10 post-dates">${post.dates}</span>
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Extra Details:</strong>
+                                <span class="col-md-10 post-extra-details">${post.extra_details}</span>
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Contact:</strong>
+                                <span class="col-md-10 post-contact">${post.contact}</span>
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Location:</strong>
+                                <span class="col-md-10 post-location">${post.location}</span>
+                            </div>
+                            <div class="row">
+                                <strong class="col-md-2">Status:</strong>
+                                <span class="col-md-10 post-status">${post.status}</span>
+                            </div>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button class="btn btn-primary copy-link-btn" data-link="${link}">Copy Link</button>
                                 <button class="btn btn-danger delete-btn" data-id="${post.id}">Delete</button>
                                 <button class="btn btn-secondary edit-btn" data-id="${post.id}">Edit</button>
                                 <div class="button-container">
@@ -98,11 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                         ` : ''}
                                 </div>
                                 ${post.status.toLowerCase() === 'completed' ? `<button class="btn btn-primary progress-btn" data-id="${post.id}">Give another talk</button>` : ''}
-                              
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
               `;
               postsContainer.innerHTML += postItem;
           });
@@ -117,19 +156,53 @@ document.body.addEventListener('click', function(e) {
         deletePost(postId);
     } else if (e.target.classList.contains('progress-btn')) {
         updatePostStatus(postId, 'in progress');
+        window.location.reload();
     } else if (e.target.classList.contains('complete-btn')) {
         // Show confirmation dialog for "Completed" button
         const isConfirmed = confirm("Are you sure you want to mark this event as completed?");
         if (isConfirmed) {
             updatePostStatus(postId, 'completed');
+            window.location.reload();
         }
     } else if (e.target.classList.contains('interested-btn')) {
         updatePostStatus(postId, 'interested');
     } else if (e.target.classList.contains('new-talk-btn')) {
         createNewTalkBasedOnPost(postId);
     } else if (e.target.classList.contains('edit-btn')) {
+        // Just set the post ID or other necessary data attributes
         const postId = e.target.getAttribute('data-id');
-        window.location.href = `form.html?postId=${postId}`;
+        const modal = document.getElementById('editPostModal');
+        modal.setAttribute('data-post-id', postId);  // Store postId in the modal for later use
+        fetchPostData(postId);
+        var myModal = new bootstrap.Modal(modal);
+        myModal.show();
+    } else if (e.target.classList.contains('btn-pre-fill')) { 
+        var myModal = new bootstrap.Modal(document.getElementById('prefillFormModal'));
+        myModal.show();
+    } else if (e.target.classList.contains('copy-link-btn')) {
+        const link = e.target.getAttribute('data-link');
+        navigator.clipboard.writeText(link).then(() => {
+            alert('Link copied to clipboard: ' + link);
+        }).catch(err => {
+            console.error('Error in copying text: ', err);
+        });
+    } else if (e.target.id === 'logoutButton') {
+        console.log('Logout button clicked');
+        fetch('http://localhost:8000/api/auth/logout', {
+            method: 'GET', // GET method to call the logout endpoint
+            credentials: 'include' // Include cookies in the request
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Something went wrong with the logout process.');
+        })
+        .then(data => {
+            console.log(data); // Handling the received data
+            window.location.href = '../index.html'; // Redirect to the home page after logout
+        })
+        .catch(error => console.error('Error:', error));
     }
 });
 
@@ -165,6 +238,93 @@ document.body.addEventListener('change', function(e) {
     }
 });
 
+
+document.getElementById('editPostForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent the default form submission
+    const postId = this.closest('.modal').getAttribute('data-post-id');
+    
+    const updatedData = {
+        email: document.getElementById('postEmail').value,
+        name: document.getElementById('postName').value,
+        role: document.getElementById('postRole').value,
+        organisation: document.getElementById('postOrganisation').value,
+        kind_of_talk: [document.getElementById('postKindOfTalk').value],
+        title: document.getElementById('postTitle').value,
+        description: document.getElementById('postDescription').value,
+        dates: [document.getElementById('postDates').value],
+        extra_details: document.getElementById('postExtraDetails').value,
+        contact: document.getElementById('postContact').value,
+        location: document.getElementById('postLocation').value
+    };
+
+    fetch(`http://localhost:8000/api/posts/${postId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'fail') {
+            throw new Error(data.message);
+        }
+        console.log('Post updated successfully', data);
+        updateDOMPost(postId, updatedData); // Update the DOM directly
+        bootstrap.Modal.getInstance(document.getElementById('editPostModal')).hide();
+    })
+    .catch(error => {
+        console.error('Error updating post:', error);
+        alert(error.message);
+    });
+});
+
+document.getElementById('prefillForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    const formData = {
+        email: document.getElementById('prefillEmail').value,
+        name: document.getElementById('prefillName').value,
+        role: document.getElementById('prefillRole').value,
+        organisation: document.getElementById('prefillOrganisation').value
+    };
+
+    fetch('http://localhost:8000/api/posts/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        bootstrap.Modal.getInstance(document.getElementById('prefillFormModal')).hide();
+        window.location.reload();  // Reload the page
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+
+function updateDOMPost(postId, data) {
+    const postElement = document.getElementById(`post-${postId}`);
+    if (postElement) {
+        postElement.querySelector('.post-email').textContent = data.email || '';
+        postElement.querySelector('.post-name').textContent = data.name || '';
+        postElement.querySelector('.post-role').textContent = data.role || '';
+        postElement.querySelector('.post-organisation').textContent = data.organisation || '';
+        postElement.querySelector('.post-kind-of-talk').textContent = Array.isArray(data.kind_of_talk) ? data.kind_of_talk.join(", ") : data.kind_of_talk;
+        postElement.querySelector('.post-title').textContent = data.title || '';
+        postElement.querySelector('.post-description').textContent = data.description || '';
+        postElement.querySelector('.post-dates').textContent = Array.isArray(data.dates) ? data.dates.join(", ") : data.dates;
+        postElement.querySelector('.post-extra-details').textContent = data.extra_details || '';
+        postElement.querySelector('.post-contact').textContent = data.contact || '';
+        postElement.querySelector('.post-location').textContent = data.location || '';
+        postElement.querySelector('.post-status').textContent = data.status || '';
+    } else {
+        console.error('Post element not found for update:', postId);
+    }
+}
 
 
 
@@ -295,7 +455,7 @@ function loadTalks() {
           result.data.forEach((talk, index) => {
             const row = `
               <tr>
-                <th scope="row">${index + 1}</th>
+                <td><input type="text" class="form-control" value="${talk.talk}" id="talkType${talk.id}"></td>
                 <td><input type="text" class="form-control" value="${talk.detail}" id="talkDetail${talk.id}"></td>
                 <td>
                   <button class="btn btn-success" onclick="updateTalk('${talk.id}')">Save</button>
@@ -316,35 +476,140 @@ function loadTalks() {
   document.getElementById('editTalksModal').addEventListener('show.bs.modal', loadTalks);
 
   function addNewTalk() {
-    const detail = prompt("Enter new talk detail:");
-    if (detail) {
-      fetch('http://localhost:8000/api/talks/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ detail }),
-      })
-      .then(response => response.json())
-      .then(() => loadTalks()) // Reload talks to show the new entry
-      .catch(error => console.error('Error adding new talk:', error));
-    }
-  }
+    // Example of how you might want to collect talk type and its detail
+    const talkType = prompt("Enter the type of talk:");
+    const talkDetail = prompt("Enter detail for the talk:");
 
-  function updateTalk(talkId) {
-    const detail = document.getElementById(`talkDetail${talkId}`).value;
+    if (talkType && talkDetail) {
+        const data = { 
+            talk: talkType, 
+            detail: talkDetail 
+        };
+
+        console.log("Sending data:", data);  // Log the data being sent to check it
+
+        fetch('http://localhost:8000/api/talks/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => {
+            if (!response.ok) {
+                // If there's an error, convert it to JSON and throw it
+                return response.json().then(err => {
+                    throw new Error(`HTTP error! Status: ${response.status}, Message: ${JSON.stringify(err)}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Success:', data);
+            loadTalks(); // Reload talks to show the new entry
+        })
+        .catch(error => console.error('Error adding new talk:', error));
+    } else {
+        console.error("Talk type or detail is missing.");
+    }
+}
+
+
+
+function updateTalk(talkId) {
+    const talkType = document.getElementById(`talkType${talkId}`).value;
+    const talkDetail = document.getElementById(`talkDetail${talkId}`).value;
+
+    const data = { 
+        talk: talkType, 
+        detail: talkDetail 
+    };
+
     fetch(`http://localhost:8000/api/talks/${talkId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ detail }),
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
     })
-    .then(response => response.json())
-    .then(() => alert('Talk updated successfully'))
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Talk updated successfully:', data);
+        loadTalks(); // Optionally reload talks to reflect the changes
+    })
     .catch(error => console.error('Error updating talk:', error));
-  }
-  
+}
+
+function deleteTalk(talkId) {
+    const confirmDelete = confirm("Are you sure you want to delete this talk?");
+    if (confirmDelete) {
+        fetch(`http://localhost:8000/api/talks/${talkId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            // Check if the response has content
+            if (response.status === 204 || response.headers.get("Content-Length") === "0") {
+                return null;  // No content to process
+            } else {
+                return response.json();  // Process JSON if available
+            }
+        })
+        .then(data => {
+            console.log('Talk deleted successfully', data);
+            loadTalks(); // Reload talks to reflect the deletion
+        })
+        .catch(error => console.error('Error deleting talk:', error));
+    }
+}
+
+ 
+var editModal = document.getElementById('editPostModal');
+
+editModal.addEventListener('show.bs.modal', function () {
+    // Retrieve the postId stored earlier
+    var postId = this.getAttribute('data-post-id');
+    console.log("Modal showing for postId:", postId);
+    fetchPostData(postId)
+        
+});
+
+function fetchPostData(postId) {
+    fetch(`http://localhost:8000/api/posts/${postId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data fetched successfully:", data);
+            // Populate the form fields for editing
+            document.getElementById('postEmail').value = data.data.email; 
+            document.getElementById('postName').value = data.data.name;
+            document.getElementById('postRole').value = data.data.role;
+            document.getElementById('postOrganisation').value = data.data.organisation;
+            document.getElementById('postKindOfTalk').value = data.data.kind_of_talk;
+            document.getElementById('postTitle').value = data.data.title;
+            document.getElementById('postDescription').value = data.data.description;
+            document.getElementById('postDates').value = data.data.dates;
+            document.getElementById('postExtraDetails').value = data.data.extra_details;
+            document.getElementById('postContact').value = data.data.contact;
+            document.getElementById('postLocation').value = data.data.location;
+        })
+        .catch(error => {
+            console.error('Error loading post details:', error);
+            alert('Failed to load the data for editing. Please try again.');
+        });
+        
+}
 
 
 

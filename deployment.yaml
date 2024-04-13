@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: eventcom-goapp
-        image: gcr.io/tidy-arena-419316/eventcom-goapp:v1
+        image: gcr.io/tidy-arena-419316/eventcom-goapp:v2
         ports:
         - containerPort: 8080
