@@ -63,6 +63,5 @@ func ValidateToken(token string, publicKey string) (interface{}, error) {
 	if !ok || !parsedToken.Valid {
 		return nil, fmt.Errorf("validate: invalid token")
 	}
-	fmt.Println("Sub value from token:", claims["sub"])
 	return claims["sub"], nil
 }

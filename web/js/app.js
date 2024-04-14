@@ -68,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const containerId = statusMap[post.status.toLowerCase()] || "interestedAccordion"; // 默认为interested状态
             const postsContainer = document.getElementById(containerId);
             const link = `http://localhost:3000/form.html?postId=${post.id}`;
-            console.log(post.id)
             const postItem = `
                 <div id="post-${post.id}" class="post-item accordion-item">
                     <h2 class="accordion-header" id="heading${index}">
@@ -226,6 +225,7 @@ document.body.addEventListener('change', function(e) {
         // 发送 PATCH 请求更新所有复选框的状态
         fetch(`http://localhost:8000/api/posts/${postId}/todos`, {
             method: 'PATCH',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -263,6 +263,7 @@ document.getElementById('editPostForm').addEventListener('submit', function(e) {
 
     fetch(`http://localhost:8000/api/posts/${postId}`, {
         method: 'PATCH',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -368,6 +369,7 @@ function moveToCorrectSection(postElement, newStatus) {
 function updatePostStatus(postId, newStatus) {
     fetch(`http://localhost:8000/api/posts/${postId}`, {
         method: 'PATCH',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -396,6 +398,7 @@ function deletePost(postId) {
 
     fetch(`http://localhost:8000/api/posts/${postId}`, {
         method: 'DELETE',
+        credentials: 'include',
     })
     .then(response => {
         // Check if the status code is 204 No Content
@@ -494,6 +497,7 @@ function loadTalks() {
 
         fetch('http://localhost:8000/api/talks/', {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -531,6 +535,7 @@ function updateTalk(talkId) {
 
     fetch(`http://localhost:8000/api/talks/${talkId}`, {
         method: 'PATCH',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -553,7 +558,8 @@ function deleteTalk(talkId) {
     const confirmDelete = confirm("Are you sure you want to delete this talk?");
     if (confirmDelete) {
         fetch(`http://localhost:8000/api/talks/${talkId}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            credentials: 'include'
         })
         .then(response => {
             if (!response.ok) {

@@ -163,7 +163,6 @@ func (p *PostServiceImpl) DeletePost(id string) error {
 }
 
 func (p *PostServiceImpl) UpdateTodos(postId string, todo models.Todo) error {
-    log.Printf("Updating todos for postId: %s with todo: %+v", postId, todo)
 
     postObjId, err := primitive.ObjectIDFromHex(postId)
     if err != nil {

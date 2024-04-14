@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fetch('http://localhost:8000/api/dates/', {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -99,16 +100,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fetch(`http://localhost:8000/api/dates/${dateId}`, {
             method: 'DELETE',
+            credentials: 'include',
         })
         .then(response => {
-            if (response.ok) {
-                return response.json();  // 处理成功的响应
-            } else if (response.status === 401) {
-                alert('Your session has expired Please click here to log in again.');
-                window.location.href = '/login.html';  // 未登录，重定向到登录页面
-            } else if (response.status === 204) {
+            if (response.status === 204) {
                 console.log('Date deleted successfully');
                 fetchDates(); // Re-fetch dates to update the list
+                return;
+            } else if (response.ok) {
+                return response.json();  // Process successful response with content
+            } else if (response.status === 401) {
+                alert('Your session has expired. Please click here to log in again.');
+                window.location.href = '/login.html';  // Redirect to login page
+                return;
             } else {
                 throw new Error('Something went wrong');
             }
@@ -207,6 +211,7 @@ document.getElementById('saveDateChanges').addEventListener('click', () => {
 function updateDate(dateId, date, detail) {
     fetch(`http://localhost:8000/api/dates/${dateId}`, {
         method: 'PATCH',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
         },
