@@ -17,10 +17,10 @@ func NewPostControllerRoute(postController controllers.PostController) PostRoute
 
 func (r *PostRouteController) PostRoute(rg *gin.RouterGroup, userService services.UserService) {
 	router := rg.Group("/posts")
+	router.POST("/", r.postController.CreatePost)
+	router.GET("/:postId", r.postController.FindPostById)	
 	router.Use(middleware.DeserializeUser(userService))
-	router.POST("/", r.postController.CreatePost)	
 	router.GET("/", r.postController.FindPosts)
-	router.GET("/:postId", r.postController.FindPostById)
 	router.PATCH("/:postId", r.postController.UpdatePost)
 	router.PATCH("/:postId/todos", r.postController.UpdateTodos)
 	router.DELETE("/:postId", r.postController.DeletePost)

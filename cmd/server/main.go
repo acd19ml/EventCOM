@@ -220,8 +220,8 @@ func startGinServer(config config.Config) {
 	UserRouteController.UserRoute(router, userService)
 	// 👇 Post Route
 	PostRouteController.PostRoute(router, userService)
-	DateRouteController.DateRoute(router)
-	TalkRouteController.TalkRoute(router)
+	DateRouteController.DateRoute(router, userService)
+	TalkRouteController.TalkRoute(router, userService)
 
 
 	log.Fatal(server.Run(":" + config.Port))

@@ -17,10 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
         credentials: 'include'
           })
       .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            if (response.ok) {
+                return response.json();  // 处理成功的响应
+            } else if (response.status === 401) {
+                window.location.href = '/login.html';  // 未登录，重定向到登录页面
+            } else {
+                throw new Error('Something went wrong');
             }
-            return response.json();
         })
       .then(data => {
           const posts = data.data;

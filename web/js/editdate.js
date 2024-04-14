@@ -70,7 +70,15 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify({ date: newDate, detail: detail }),
         })
-        .then(response => response.json())
+        .then(response => {
+            if (response.ok) {
+                return response.json();  // 处理成功的响应
+            } else if (response.status === 401) {
+                window.location.href = '/login.html';  // 未登录，重定向到登录页面
+            } else {
+                throw new Error('Something went wrong');
+            }
+        })
         .then(data => {
             if (data.status === 'success') {
                 console.log('Date added:', data);
@@ -92,11 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'DELETE',
         })
         .then(response => {
-            if (response.status === 204) {
+            if (response.ok) {
+                return response.json();  // 处理成功的响应
+            } else if (response.status === 401) {
+                window.location.href = '/login.html';  // 未登录，重定向到登录页面
+            } else if (response.status === 204) {
                 console.log('Date deleted successfully');
                 fetchDates(); // Re-fetch dates to update the list
             } else {
-                return response.json();
+                throw new Error('Something went wrong');
             }
         })
         .catch(error => console.error('Error deleting date:', error));
@@ -198,7 +210,15 @@ function updateDate(dateId, date, detail) {
         },
         body: JSON.stringify({ date, detail }),
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            return response.json();  // 处理成功的响应
+        } else if (response.status === 401) {
+            window.location.href = '/login.html';  // 未登录，重定向到登录页面
+        } else {
+            throw new Error('Something went wrong');
+        }
+    })
     .then(data => {
         if (data.status === 'success') {
             console.log('Date updated:', data);
