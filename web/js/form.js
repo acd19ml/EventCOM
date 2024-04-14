@@ -138,11 +138,20 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             console.log('Success:', data);
-            // 处理成功响应
+
+            if (data && data.data && data.data.id) {
+                // 设置cookie
+                document.cookie = "postId=" + data.data.id + ";path=/;expires=" + new Date(new Date().getTime() + 86400 * 1000).toUTCString();
+                console.log("Cookie set for postId:", data.data.id);
+                window.location.href = '../response.html';
+            } else {
+                console.error('No ID found in response data:', data);
+            }
+
+            
         })
         .catch((error) => {
             console.error('Error:', error);
-            // 处理错误
         });
     });
 
