@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 return response.json();  // 处理成功的响应
             } else if (response.status === 401) {
+                alert('Your session has expired Please click here to log in again.');
                 window.location.href = '/login.html';  // 未登录，重定向到登录页面
             } else {
                 throw new Error('Something went wrong');
@@ -103,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 return response.json();  // 处理成功的响应
             } else if (response.status === 401) {
+                alert('Your session has expired Please click here to log in again.');
                 window.location.href = '/login.html';  // 未登录，重定向到登录页面
             } else if (response.status === 204) {
                 console.log('Date deleted successfully');
@@ -214,6 +216,7 @@ function updateDate(dateId, date, detail) {
         if (response.ok) {
             return response.json();  // 处理成功的响应
         } else if (response.status === 401) {
+            alert('Your session has expired Please click here to log in again.');
             window.location.href = '/login.html';  // 未登录，重定向到登录页面
         } else {
             throw new Error('Something went wrong');
