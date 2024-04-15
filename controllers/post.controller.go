@@ -9,9 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/acd19ml/EventCOM/models"
 	"github.com/acd19ml/EventCOM/services"
+
+	"github.com/acd19ml/EventCOM/utils"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
+const predefinedUserID = "66128277945dc259684b2111"	
 type PostController struct {
 	postService services.PostService
 }
@@ -28,7 +31,7 @@ func (pc *PostController) CreatePost(ctx *gin.Context) {
 		return
 	}
 	
-	const predefinedUserID = "66128277945dc259684b2111"	
+	
 
 	post.SetDefaultStatus()
 	// Initialize Todos with default values if empty
@@ -102,7 +105,7 @@ func (pc *PostController) FindPostById(ctx *gin.Context) {
 
 func (pc *PostController) FindPosts(ctx *gin.Context) {
     var page = ctx.DefaultQuery("page", "1")
-    var limit = ctx.DefaultQuery("limit", "10")
+    var limit = ctx.DefaultQuery("limit", "100")
 
 	userID, exists := ctx.Get("userID")
     if !exists {
@@ -171,3 +174,25 @@ func (pc *PostController) UpdateTodos(ctx *gin.Context) {
 }
 
 
+func (pc *PostController) SendEmailToGroup(ctx *gin.Context) {
+    var req *models.EmailSendRequest
+    if err := ctx.ShouldBindJSON(&req); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
+        return
+    }
+
+    // 创建邮件数据结构
+    emailData := &utils.GroupEmailData{
+        Subject: req.Subject,
+        Content: req.Content,
+        URL:     req.URL,
+    }
+
+    // 调用邮件发送函数
+    if err := utils.SendGroupEmail(req.Recipients, emailData, "templates/groupEmail.html"); err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send email"})
+        return
+    }
+
+    ctx.JSON(http.StatusOK, gin.H{"message": "Emails sent successfully"})
+}

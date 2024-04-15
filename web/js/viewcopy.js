@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (postId) {
         fetch(`http://localhost:8000/api/posts/${postId}`, {
-            credentials: 'include' // 如果 API 需要身份验证
+            credentials: 'include' 
         })
         .then(response => {
             if (!response.ok) throw new Error('Failed to fetch post details');

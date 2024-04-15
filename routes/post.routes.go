@@ -20,6 +20,9 @@ func (r *PostRouteController) PostRoute(rg *gin.RouterGroup, userService service
 	router.POST("/", r.postController.CreatePost)
 	router.GET("/:postId", r.postController.FindPostById)	
 	router.Use(middleware.DeserializeUser(userService))
+
+	router.POST("/send-email", r.postController.SendEmailToGroup)
+
 	router.GET("/", r.postController.FindPosts)
 	router.PATCH("/:postId", r.postController.UpdatePost)
 	router.PATCH("/:postId/todos", r.postController.UpdateTodos)

@@ -18,6 +18,13 @@ type EmailData struct {
 	Subject   string
 }
 
+type GroupEmailData struct {
+    Subject string
+    Content string  
+    URL     string  
+}
+
+
 // 👇 Email template parser
 func SendEmail(user *models.DBResponse, data *EmailData, temp *template.Template, templateName string) error {
 	config, err := config.LoadConfig(".")
@@ -57,3 +64,44 @@ func SendEmail(user *models.DBResponse, data *EmailData, temp *template.Template
 	}
 	return nil
 }
+
+func SendGroupEmail(recipients []string, emailData *GroupEmailData, templateFile string) error {
+    cfg, err := config.LoadConfig(".")
+    if err != nil {
+        log.Printf("Error loading config: %v", err)
+        return err
+    }
+
+    // 使用 template.ParseFiles 直接加载指定模板
+    tmpl, err := template.ParseFiles(templateFile)
+    if err != nil {
+        log.Printf("Error loading email template: %v", err)
+        return err
+    }
+
+    var body bytes.Buffer
+    if err := tmpl.Execute(&body, emailData); err != nil {
+        log.Printf("Could not execute email template: %v", err)
+        return err
+    }
+
+    m := gomail.NewMessage()
+    m.SetHeader("From", cfg.EmailFrom)
+    m.SetHeader("Subject", emailData.Subject)
+    m.SetBody("text/html", body.String())
+    m.AddAlternative("text/plain", html2text.HTML2Text(body.String()))
+
+    d := gomail.NewDialer(cfg.SMTPHost, cfg.SMTPPort, cfg.SMTPUser, cfg.SMTPPass)
+    d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+
+    for _, recipient := range recipients {
+        m.SetHeader("To", recipient)
+        if err := d.DialAndSend(m); err != nil {
+            log.Printf("Failed to send email to %s: %v", recipient, err)
+            continue
+        }
+    }
+
+    return nil
+}
+

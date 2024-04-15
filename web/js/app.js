@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const containerId = statusMap[post.status.toLowerCase()] || "interestedAccordion"; // 默认为interested状态
             const postsContainer = document.getElementById(containerId);
             const link = `http://localhost:3000/form.html?postId=${post.id}`;
+            const emaillink = `http://localhost:3000/sendEmail.html?postId=${post.id}`;
             const postItem = `
                 <div id="post-${post.id}" class="post-item accordion-item">
                     <h2 class="accordion-header" id="heading${index}">
@@ -137,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     ${post.status.toLowerCase() === 'in progress' ? `
                                     <button class="btn btn-success complete-btn" data-id="${post.id}">Completed</button>
                                     <button class="btn btn-secondary interested-btn" data-id="${post.id}">Interested</button>
+                                    <button class="btn btn-primary send-email-btn" data-link="${emaillink}">Send Invitaion Email</button>
                                         ` : ''}
                                 </div>
                                 ${post.status.toLowerCase() === 'completed' ? `<button class="btn btn-primary progress-btn" data-id="${post.id}">Give another talk</button>` : ''}
@@ -189,6 +191,9 @@ document.body.addEventListener('click', function(e) {
         }).catch(err => {
             console.error('Error in copying text: ', err);
         });
+    }  else if (e.target.classList.contains('send-email-btn')) {
+        const link = e.target.getAttribute('data-link');
+        window.location.href = link;
     } else if (e.target.id === 'logoutButton') {
         console.log('Logout button clicked');
         fetch('http://localhost:8000/api/auth/logout', {
@@ -467,7 +472,7 @@ function loadTalks() {
                 <td>
                   <button class="btn btn-success" onclick="updateTalk('${talk.id}')">Save</button>
                   <button class="btn btn-danger" onclick="deleteTalk('${talk.id}')">Delete</button>
-                </td>
+                </td>addNewTalk
               </tr>
             `;
             talksTableBody.innerHTML += row;

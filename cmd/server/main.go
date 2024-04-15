@@ -46,15 +46,23 @@ var (
 	postCollection      *mongo.Collection
 	PostRouteController routes.PostRouteController
 
+	// 👇 Create the Date Variables
 	dateCollection      *mongo.Collection
-	DateService         services.DateService
+	dateService         services.DateService
 	DateController      controllers.DateController
 	DateRouteController routes.DateRouteController
 
+	// 👇 Create the Talk Variables
 	talkCollection      *mongo.Collection
-	TalkService         services.TalkService
+	talkService         services.TalkService
 	TalkController      controllers.TalkController
 	TalkRouteController routes.TalkRouteController
+
+	// 👇 Create the Attendee Variables
+	attendeeService         services.AttendeeService
+	AttendeeController      controllers.AttendeeController
+	attendeeCollection      *mongo.Collection
+	AttendeeRouteController routes.AttendeeRouteController
 
 	temp *template.Template
 )
@@ -131,16 +139,21 @@ func init() {
 	PostRouteController = routes.NewPostControllerRoute(PostController)
 
 	dateCollection = mongoclient.Database("golang_mongodb").Collection("dates")
-	DateService = services.NewDateService(dateCollection, ctx)
-	DateController = controllers.NewDateController(DateService)
+	dateService = services.NewDateService(dateCollection, ctx)
+	DateController = controllers.NewDateController(dateService)
 	DateRouteController = routes.NewDateControllerRoute(DateController)
 
 	talkCollection = mongoclient.Database("golang_mongodb").Collection("talks")
-	TalkService = services.NewTalkService(talkCollection, ctx)
-	TalkController = controllers.NewTalkController(TalkService)
+	talkService = services.NewTalkService(talkCollection, ctx)
+	TalkController = controllers.NewTalkController(talkService)
 	TalkRouteController = routes.NewTalkControllerRoute(TalkController)
 
+	attendeeCollection = mongoclient.Database("golang_mongodb").Collection("attendees")
+	attendeeService = services.NewAttendeeService(attendeeCollection, ctx)
+	AttendeeController = controllers.NewAttendeeController(attendeeService)
+	AttendeeRouteController = routes.NewAttendeeControllerRoute(AttendeeController)
 
+	// Gin Server
 
 	server = gin.Default()
 }
@@ -222,6 +235,7 @@ func startGinServer(config config.Config) {
 	PostRouteController.PostRoute(router, userService)
 	DateRouteController.DateRoute(router, userService)
 	TalkRouteController.TalkRoute(router, userService)
+	AttendeeRouteController.AttendeeRoute(router, userService)
 
 
 	log.Fatal(server.Run(":" + config.Port))

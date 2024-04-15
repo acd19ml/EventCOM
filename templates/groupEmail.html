@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .email-container {
+            background-color: #ffffff;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        .content {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="content">
+            <p>Hello everyone,</p>
+            <p>{{ .Content }}</p>
+            <p>Looking forword to seeing you there.</p>
+            <p>Best wishes,</p>
+            <p>Andy Stratton</p>
+        </div>
+    </div>
+</body>
+</html>

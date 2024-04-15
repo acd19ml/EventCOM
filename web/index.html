@@ -17,7 +17,8 @@
         }
 
         .container {
-            margin-top: 70px;
+            margin-top: 30px;
+            margin-bottom: 70px;;
             flex-grow: 1; /* 让容器元素占据所有可用空间 */
         }
 
@@ -100,109 +101,109 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>      
 
-        <!-- Edit Post Modal -->
-        <div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="editPostModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editPostModalLabel">Edit Post Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editPostForm" class="form-horizontal">
-                            <div class="row mb-3">
-                                <label for="postEmail" class="col-sm-3 col-form-label">Email</label>
-                                <div class="col-sm-9">
-                                    <input type="email" class="form-control" id="postEmail">
-                                </div>
+        
+    </div>
+
+    <!-- Edit Post Modal -->
+    <div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="editPostModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPostModalLabel">Edit Post Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPostForm" class="form-horizontal">
+                        <div class="row mb-3">
+                            <label for="postEmail" class="col-sm-3 col-form-label">Email</label>
+                            <div class="col-sm-9">
+                                <input type="email" class="form-control" id="postEmail">
                             </div>
-                    
-                            <div class="row mb-3">
-                                <label for="postName" class="col-sm-3 col-form-label">Name</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="postName">
-                                </div>
+                        </div>
+                
+                        <div class="row mb-3">
+                            <label for="postName" class="col-sm-3 col-form-label">Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="postName">
                             </div>
-                    
-                            <div class="row mb-3">
-                                <label for="postRole" class="col-sm-3 col-form-label">Role</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="postRole">
-                                </div>
+                        </div>
+                
+                        <div class="row mb-3">
+                            <label for="postRole" class="col-sm-3 col-form-label">Role</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="postRole">
                             </div>
-                    
-                            <div class="row mb-3">
-                                <label for="postOrganisation" class="col-sm-3 col-form-label">Organisation</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="postOrganisation">
-                                </div>
+                        </div>
+                
+                        <div class="row mb-3">
+                            <label for="postOrganisation" class="col-sm-3 col-form-label">Organisation</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="postOrganisation">
                             </div>
-                    
-                            <div class="row mb-3">
-                                <label for="postContact" class="col-sm-3 col-form-label">Contact</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="postContact">
-                                </div>
+                        </div>
+                
+                        <div class="row mb-3">
+                            <label for="postContact" class="col-sm-3 col-form-label">Contact</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="postContact">
                             </div>
-                    
-                            <div class="row mb-3">
-                                <label for="postKindOfTalk" class="col-sm-3 col-form-label">Kind of Talk</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="postKindOfTalk">
-                                </div>
+                        </div>
+                
+                        <div class="row mb-3">
+                            <label for="postKindOfTalk" class="col-sm-3 col-form-label">Kind of Talk</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="postKindOfTalk">
                             </div>
-                    
-                            <div class="row mb-3">
-                                <label for="postTitle" class="col-sm-3 col-form-label">Title</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="postTitle">
-                                </div>
+                        </div>
+                
+                        <div class="row mb-3">
+                            <label for="postTitle" class="col-sm-3 col-form-label">Title</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="postTitle">
                             </div>
-                    
-                            <div class="row mb-3">
-                                <label for="postDescription" class="col-sm-3 col-form-label">Description</label>
-                                <div class="col-sm-9">
-                                    <textarea class="form-control" id="postDescription" rows="3"></textarea>
-                                </div>
+                        </div>
+                
+                        <div class="row mb-3">
+                            <label for="postDescription" class="col-sm-3 col-form-label">Description</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="postDescription" rows="3"></textarea>
                             </div>
-                    
-                            <div class="row mb-3">
-                                <label for="postDates" class="col-sm-3 col-form-label">Dates</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="postDates">
-                                </div>
+                        </div>
+                
+                        <div class="row mb-3">
+                            <label for="postDates" class="col-sm-3 col-form-label">Dates</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="postDates">
                             </div>
-                    
-                            <div class="row mb-3">
-                                <label for="postExtraDetails" class="col-sm-3 col-form-label">Extra Details</label>
-                                <div class="col-sm-9">
-                                    <textarea class="form-control" id="postExtraDetails" rows="3"></textarea>
-                                </div>
+                        </div>
+                
+                        <div class="row mb-3">
+                            <label for="postExtraDetails" class="col-sm-3 col-form-label">Extra Details</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="postExtraDetails" rows="3"></textarea>
                             </div>
-                    
-                            <div class="row mb-3">
-                                <label for="postLocation" class="col-sm-3 col-form-label">Location</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="postLocation">
-                                </div>
+                        </div>
+                
+                        <div class="row mb-3">
+                            <label for="postLocation" class="col-sm-3 col-form-label">Location</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="postLocation">
                             </div>
-                    
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
+                        </div>
+                
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-
-        
     </div>
 
     <!-- Pre-fill Form Modal -->

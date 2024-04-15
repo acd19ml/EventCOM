@@ -85,6 +85,13 @@ type UpdateTodoRequest struct {
 	CalenderInvite bool               `json:"calender_invite" bson:"calender_invite"`
 }
 
+type EmailSendRequest struct {
+    Subject    string   `json:"subject"`
+    Recipients []string `json:"recipients"`
+    Content    string   `json:"content"`
+    URL        string   `json:"url"`
+}
+
 
 func (c *CreatePostRequest) SetDefaultStatus() {
     if c.Status == "" {

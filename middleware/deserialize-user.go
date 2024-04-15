@@ -10,7 +10,7 @@ import (
 	"github.com/acd19ml/EventCOM/services"
 	"github.com/acd19ml/EventCOM/utils"
 )
-
+const predefinedUserID = "66128277945dc259684b2111"
 func DeserializeUser(userService services.UserService) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var access_token string
@@ -34,6 +34,11 @@ func DeserializeUser(userService services.UserService) gin.HandlerFunc {
 		sub, err := utils.ValidateToken(access_token, config.AccessTokenPublicKey)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": err.Error()})
+			return
+		}
+
+		if sub != predefinedUserID {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": "Invalid user ID"})
 			return
 		}
 
