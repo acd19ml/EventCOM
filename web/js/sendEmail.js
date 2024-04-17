@@ -123,7 +123,7 @@ function updateRecipientOptions(attendees, interest, roles, statuses) {
     const filteredAttendees = attendees.filter(attendee => {
         const matchesInterest = attendee.interests.includes(interest);
         const matchesRole = roles.length === 0 || roles.includes(attendee.role);
-        const matchesStatus = statuses.length === 0 || statuses.includes(attendee.status);
+        const matchesStatus = statuses.length === 0 || statuses.includes(attendee.status) || attendee.status === '';
         return matchesInterest && matchesRole && matchesStatus;
     });
     const emailList = filteredAttendees.map(attendee => attendee.email).join('; ');

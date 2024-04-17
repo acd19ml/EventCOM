@@ -472,7 +472,7 @@ function loadTalks() {
                 <td>
                   <button class="btn btn-success" onclick="updateTalk('${talk.id}')">Save</button>
                   <button class="btn btn-danger" onclick="deleteTalk('${talk.id}')">Delete</button>
-                </td>addNewTalk
+                </td>
               </tr>
             `;
             talksTableBody.innerHTML += row;
