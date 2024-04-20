@@ -5,16 +5,16 @@ import (
 	"strconv"
 	"strings"
 
-	"fmt"
+	// "fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/acd19ml/EventCOM/models"
 	"github.com/acd19ml/EventCOM/services"
 
 	"github.com/acd19ml/EventCOM/utils"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	// "go.mongodb.org/mongo-driver/bson/primitive"
 )
-const predefinedUserID = "66128277945dc259684b2111"	
+// const predefinedUserID = "66128277945dc259684b2111"	
 type PostController struct {
 	postService services.PostService
 }
@@ -46,12 +46,12 @@ func (pc *PostController) CreatePost(ctx *gin.Context) {
         }
     }
 
-	userID, err := primitive.ObjectIDFromHex(predefinedUserID)
-    if err != nil {
-        ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid userID"})
-        return
-    }
-    post.UserID = userID
+	// userID, err := primitive.ObjectIDFromHex(predefinedUserID)
+    // if err != nil {
+    //     ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid userID"})
+    //     return
+    // }
+    // post.UserID = userID
 
 	newPost, err := pc.postService.CreatePost(&post)
 
@@ -107,14 +107,14 @@ func (pc *PostController) FindPosts(ctx *gin.Context) {
     var page = ctx.DefaultQuery("page", "1")
     var limit = ctx.DefaultQuery("limit", "100")
 
-	userID, exists := ctx.Get("userID")
-    if !exists {
-		fmt.Println("UserID not found in context")
-        ctx.JSON(http.StatusUnauthorized, gin.H{"error": "user not authenticated"})
-        return
-    }
+	// userID, exists := ctx.Get("userID")
+    // if !exists {
+	// 	fmt.Println("UserID not found in context")
+    //     ctx.JSON(http.StatusUnauthorized, gin.H{"error": "user not authenticated"})
+    //     return
+    // }
 
-    objUserID := userID.(primitive.ObjectID)  // 获取当前登录用户的 ObjectID
+    // objUserID := userID.(primitive.ObjectID)  // 获取当前登录用户的 ObjectID
 
     intPage, err := strconv.Atoi(page)
     if err != nil {
@@ -129,7 +129,8 @@ func (pc *PostController) FindPosts(ctx *gin.Context) {
     }
 
     // 从服务层获取帖子，使用预定义的用户ID进行过滤
-    posts, err := pc.postService.FindPosts(objUserID, intPage, intLimit)
+    // posts, err := pc.postService.FindPosts(objUserID, intPage, intLimit)
+    posts, err := pc.postService.FindPosts(intPage, intLimit)
     if err != nil {
         ctx.JSON(http.StatusBadGateway, gin.H{"status": "fail", "message": err.Error()})
         return
@@ -172,7 +173,6 @@ func (pc *PostController) UpdateTodos(ctx *gin.Context) {
 
     ctx.JSON(http.StatusOK, gin.H{"status": "success", "message": "Todos updated successfully"})
 }
-
 
 func (pc *PostController) SendEmailToGroup(ctx *gin.Context) {
     var req *models.EmailSendRequest

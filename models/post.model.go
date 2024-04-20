@@ -22,7 +22,7 @@ type CreatePostRequest struct {
 	Todos       Todo      `json:"todos" bson:"todos"` // Embedding Todos directly
 	CreateAt  time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
-	UserID primitive.ObjectID `json:"userId" bson:"userId"`
+	// UserID primitive.ObjectID `json:"userId" bson:"userId"`
 }
 
 type DBPost struct {
@@ -42,7 +42,7 @@ type DBPost struct {
 	Todos       Todo      `json:"todos,omitempty" bson:"todos,omitempty"` // Embedding Todos directly
 	CreateAt  time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	UpdatedAt time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
-	UserID primitive.ObjectID `json:"userId,omitempty" bson:"userId,omitempty"`
+	// UserID primitive.ObjectID `json:"userId,omitempty" bson:"userId,omitempty"`
 }
 
 type UpdatePost struct {
@@ -61,7 +61,7 @@ type UpdatePost struct {
 	Todos       Todo      `json:"todos,omitempty" bson:"todos,omitempty"` // Embedding Todos directly
 	CreateAt  time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	UpdatedAt time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
-	UserID primitive.ObjectID `json:"userId,omitempty" bson:"userId,omitempty"`
+	// UserID primitive.ObjectID `json:"userId,omitempty" bson:"userId,omitempty"`
 }
 
 // Todo represents a task related to preparing and organizing a talk.

@@ -25,12 +25,38 @@
 <body>
     <div class="email-container">
         <div class="content">
-            <p>Hello everyone,</p>
-            <p>{{ .Content }}</p>
-            <p>Looking forword to seeing you there.</p>
-            <p>Best wishes,</p>
-            <p>Andy Stratton</p>
+            <div style="white-space: pre;">{{ .Content }}</div>
         </div>
+        <table
+              role="presentation"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              class="btn btn-primary"
+            >
+              <tbody>
+                <tr>
+                  <td align="left">
+                    <table
+                      role="presentation"
+                      border="0"
+                      cellpadding="0"
+                      cellspacing="0"
+                    >
+                      <tbody>
+                        <tr>
+                          <td>
+                            <a href="{{.URL}}" target="_blank"
+                              >Register as audience</a
+                            >
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
     </div>
 </body>
 </html>

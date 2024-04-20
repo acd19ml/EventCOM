@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
             talkRow.className = 'row';
             talkRow.innerHTML = `
                 <div class="col">
-                    <input class="form-check-input" type="checkbox" value="${talk.detail}" id="talk${talk.id}" name="talks">
+                    <input class="form-check-input" type="checkbox" value="${talk.talk}" id="talk${talk.id}" name="talks">
                     <label class="form-check-label" for="talk${talk.id}">${talk.detail}</label>
                 </div>
             `;
@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', function () {
             dateRow.className = 'row mb-3'; // Added mb-3 for margin-bottom
             dateRow.innerHTML = `
                 <div class="col-sm-3">
-                    <label>${dateObj.date}</label>
+                    <label id="dateLabel">${dateObj.date}</label>
+                    <label id="detailLabel">${dateObj.detail}</label>
                 </div>
                 <div class="col-sm-9">
                     <div class="form-check form-check-inline">
@@ -97,11 +98,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // Collecting the date selections and their statuses
         var datesStatuses = [];
         document.querySelectorAll('#datesSelection .row').forEach(function(row) {
-            const label = row.querySelector('label');
-            const dateValue = label ? label.textContent.trim() : 'Unknown Date'; // Default to 'Unknown Date' if label not found
+            const dateId = `dateLabel`;
+            const detailId = `detailLabel`;
+            const dateValue = document.getElementById(dateId) ? document.getElementById(dateId).textContent.trim() : 'Unknown Date';
+            const detailValue = document.getElementById(detailId) ? document.getElementById(detailId).textContent.trim() : 'Unknown Talk';
             row.querySelectorAll('.form-check-input:checked').forEach(function(selectedOption) {
-                // datesStatuses.push({ date: dateValue, detail: selectedOption.value });
-                datesStatuses.push(dateValue + ' - ' + selectedOption.value);
+                datesStatuses.push(dateValue + ' - ' + detailValue + ' - ' + selectedOption.value);
             });
         });
 

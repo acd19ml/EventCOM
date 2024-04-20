@@ -6,14 +6,16 @@ document.addEventListener('DOMContentLoaded', function() {
             headerPlaceholder.innerHTML = data;
         });
 
-    // const queryParams = new URLSearchParams(window.location.search);
-    // const postId = queryParams.get('postId');
-    // if (postId) {
-    //     formSubject(postId)
-    //     formContent(postId)
-    
-    // }
-    // Setup event listeners after the DOM has fully loaded
+    const queryParams = new URLSearchParams(window.location.search);
+    const postId = queryParams.get('postId');
+    if (postId) {
+        formSubject(postId)
+        formContent(postId)
+        checkStatus(postId)
+        checkInterest(postId)
+
+    }
+
     setupEventListeners()
     
 });
@@ -43,15 +45,23 @@ function submitEmailForm() {
     const content = document.getElementById('emailContent').value;
     const recipients = document.getElementById('emailRecipients').value.split(';').map(email => email.trim());
 
+    const queryParams = new URLSearchParams(window.location.search);
+    const postId = queryParams.get('postId');
+    
+    // 构建注册链接
+    const url = `http://localhost:3000/attendance.html?postId=${postId}`;
+
     const emailData = {
         subject: subject,
         content: content,
-        recipients: recipients
+        recipients: recipients,
+        url: url
     };
 
     console.log('Submitting:', emailData);
 
-    fetch('http://localhost:8000/api/posts/send-email', {
+    // fetch('http://localhost:8000/api/posts/send-invitation', {
+        fetch('http://localhost:8000/api/posts/send-email', {      
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -141,3 +151,98 @@ function addRecipient() {
     }
     document.getElementById('manualEmail').value = ''; // Clear the manual entry field
 }
+
+function formSubject(postId) {
+    fetch(`http://localhost:8000/api/posts/${postId}`)
+        .then(response => response.json())
+        .then(response => {
+            const data = response.data;
+            const subject = `${data.title} - ${data.dates.join(', ')}, ${data.location}`;
+            document.getElementById('emailSubject').value = subject;
+            console.log("Email subject set as:", subject);  // For debugging
+        })
+        .catch(error => {
+            console.error('Error fetching post for subject:', error);
+        });
+}
+
+function formContent(postId) {
+    fetch(`http://localhost:8000/api/posts/${postId}`)
+        .then(response => response.json())
+        .then(response => {
+            const data = response.data;
+            const content = 
+`Hello everyone,
+
+${data.description}
+
+Looking forward to seeing you there.
+
+Best wishes,
+Andy Stratton`;
+            document.getElementById('emailContent').innerHTML = content; // 使用innerHTML而非textContent
+            console.log("Email content set as:", content);  // For debugging
+        })
+        .catch(error => {
+            console.error('Error fetching post for content:', error);
+        });
+}
+
+
+
+function checkInterest(postId) {
+    fetch(`http://localhost:8000/api/posts/${postId}`)
+        .then(response => response.json())
+        .then(response => {
+            const data = response.data;
+            const interestSelect = document.getElementById('interestSelect');
+
+            // Reset the selection first
+            interestSelect.value = '';
+
+            // Check and set the interest based on 'kind_of_talk' array
+            if (data.kind_of_talk.includes("Talk from Industry")) {
+                interestSelect.value = document.getElementById('industryTalk').value;
+            } else if (data.kind_of_talk.includes("COM Founder's Club Talk")) {
+                interestSelect.value = document.getElementById('foundersTalk').value;
+            }
+
+            console.log("Interest set based on kind of talk:", interestSelect.value);
+        })
+        .catch(error => {
+            console.error('Error fetching post details for interests:', error);
+        });
+}
+
+
+function checkStatus(postId) {
+    fetch(`http://localhost:8000/api/posts/${postId}`)
+        .then(response => response.json())
+        .then(response => {
+            const data = response.data; 
+
+            // Check checkboxes based on 'kind_of_talk' array
+            if (data.kind_of_talk) {
+                if (data.kind_of_talk.includes("Talk to 1st year students")) {
+                    document.getElementById('1stYear').checked = true;
+                    // document.getElementById('roleStudent').checked = true;
+                }
+                if (data.kind_of_talk.includes("Talk to 2nd year students")) {
+                    document.getElementById('2ndYear').checked = true;
+                    // document.getElementById('roleStudent').checked = true;
+                }
+                if (data.kind_of_talk.includes("Talk to 3rd year students")) {
+                    document.getElementById('3rdYear').checked = true;
+                    // document.getElementById('roleStudent').checked = true;
+                }
+                if (data.kind_of_talk.includes("Talk to MSc students")) {
+                    document.getElementById('MSc').checked = true;
+                    // document.getElementById('roleStudent').checked = true;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching post details:', error);
+        });
+}
+

@@ -97,7 +97,8 @@ func (p *PostServiceImpl) FindPostById(id string) (*models.DBPost, error) {
 	return post, nil
 }
 
-func (p *PostServiceImpl) FindPosts(userID primitive.ObjectID, page int, limit int) ([]*models.DBPost, error) {
+func (p *PostServiceImpl) FindPosts(page int, limit int) ([]*models.DBPost, error) {
+// func (p *PostServiceImpl) FindPosts(userID primitive.ObjectID, page int, limit int) ([]*models.DBPost, error) {
 	if page == 0 {
 		page = 1
 	}
@@ -113,7 +114,8 @@ func (p *PostServiceImpl) FindPosts(userID primitive.ObjectID, page int, limit i
 	opt.SetSkip(int64(skip))
 	opt.SetSort(bson.M{"created_at": -1})
 
-	query := bson.M{"userId": userID}
+	// query := bson.M{"userId": userID}
+	query := bson.M{}
 
 	cursor, err := p.postCollection.Find(p.ctx, query, &opt)
 	if err != nil {

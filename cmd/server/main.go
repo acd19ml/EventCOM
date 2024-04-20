@@ -64,6 +64,10 @@ var (
 	attendeeCollection      *mongo.Collection
 	AttendeeRouteController routes.AttendeeRouteController
 
+	attendanceService         services.AttendanceService
+	AttendanceController      controllers.AttendanceController
+	attendanceCollection      *mongo.Collection
+	AttendanceRouteController routes.AttendanceRouteController
 	temp *template.Template
 )
 
@@ -153,6 +157,11 @@ func init() {
 	AttendeeController = controllers.NewAttendeeController(attendeeService)
 	AttendeeRouteController = routes.NewAttendeeControllerRoute(AttendeeController)
 
+	attendanceCollection = mongoclient.Database("golang_mongodb").Collection("attendances")
+	attendanceService = services.NewAttendanceService(attendanceCollection, ctx)
+	AttendanceController = controllers.NewAttendanceController(attendanceService)
+	AttendanceRouteController = routes.NewAttendanceControllerRoute(AttendanceController)
+
 	// Gin Server
 
 	server = gin.Default()
@@ -236,6 +245,7 @@ func startGinServer(config config.Config) {
 	DateRouteController.DateRoute(router, userService)
 	TalkRouteController.TalkRoute(router, userService)
 	AttendeeRouteController.AttendeeRoute(router, userService)
+	AttendanceRouteController.AttendanceRoute(router, userService)
 
 
 	log.Fatal(server.Run(":" + config.Port))

@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const headerPlaceholder = document.getElementById('footer-placeholder');
             headerPlaceholder.innerHTML = data;
         });
-
+    
   fetch('http://localhost:8000/api/posts/',{
         method: "GET",
         credentials: 'include'
@@ -129,6 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <strong class="col-md-2">Status:</strong>
                                 <span class="col-md-10 post-status">${post.status}</span>
                             </div>
+                            
+                            <div class="row" id="attendee-count-container-${index}">
+                            </div>
+
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <button class="btn btn-primary copy-link-btn" data-link="${link}">Copy Link</button>
                                 <button class="btn btn-danger delete-btn" data-id="${post.id}">Delete</button>
@@ -149,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               `;
               postsContainer.innerHTML += postItem;
+              fetchAttendeesCount(post.id, index);
           });
       })
       .catch(error => console.error('Error fetching posts:', error));
@@ -628,3 +633,24 @@ function fetchPostData(postId) {
 
 
 
+function fetchAttendeesCount(postId, index) {
+    fetch(`http://localhost:8000/api/attendances/?postId=${postId}`,{
+        method:`GET`,
+        credentials:`include`,
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const numAttendees = data.results; // Assuming 'results' is the count of attendees
+        const attendeeCountContainer = document.querySelector(`#attendee-count-container-${index}`);
+        if (attendeeCountContainer) {
+            attendeeCountContainer.innerHTML = `
+                <strong class="col-md-2">Attendees:</strong>
+                <span class="col-md-10">${numAttendees}</span>
+            `;
+        }
+    })
+    .catch(error => console.error(`Error fetching attendees for postId ${postId}:`, error));
+}
