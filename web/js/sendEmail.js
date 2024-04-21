@@ -60,8 +60,7 @@ function submitEmailForm() {
 
     console.log('Submitting:', emailData);
 
-    // fetch('http://localhost:8000/api/posts/send-invitation', {
-        fetch('http://localhost:8000/api/posts/send-email', {      
+    fetch('http://localhost:8000/api/posts/send-email', {      
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -71,10 +70,10 @@ function submitEmailForm() {
     })
     .then(response => {
         if (response.ok) {
-            return response.json();  // 处理成功的响应
+            return response.json(); 
         } else if (response.status === 401) {
             alert('Your session has expired Please click here to log in again.');
-            window.location.href = '/login.html';  // 未登录，重定向到登录页面            
+            window.location.href = '/login.html';        
         } else {
             throw new Error('Something went wrong');
         }
@@ -107,10 +106,10 @@ function filterRecipients() {
     })
     .then(response => {
         if (response.ok) {
-            return response.json();  // 处理成功的响应
+            return response.json();  
         } else if (response.status === 401) {
             alert('Your session has expired Please click here to log in again.');
-            window.location.href = '/login.html';  // 未登录，重定向到登录页面            
+            window.location.href = '/login.html';        
         } else {
             throw new Error('Something went wrong');
         }
@@ -180,8 +179,8 @@ Looking forward to seeing you there.
 
 Best wishes,
 Andy Stratton`;
-            document.getElementById('emailContent').innerHTML = content; // 使用innerHTML而非textContent
-            console.log("Email content set as:", content);  // For debugging
+            document.getElementById('emailContent').innerHTML = content; 
+            console.log("Email content set as:", content); 
         })
         .catch(error => {
             console.error('Error fetching post for content:', error);
@@ -196,16 +195,20 @@ function checkInterest(postId) {
         .then(response => {
             const data = response.data;
             const interestSelect = document.getElementById('interestSelect');
-
+            console.log('Checking interest for:', data.kind_of_talk);
             // Reset the selection first
             interestSelect.value = '';
 
-            // Check and set the interest based on 'kind_of_talk' array
-            if (data.kind_of_talk.includes("Talk from Industry")) {
-                interestSelect.value = document.getElementById('industryTalk').value;
-            } else if (data.kind_of_talk.includes("COM Founder's Club Talk")) {
-                interestSelect.value = document.getElementById('foundersTalk').value;
-            }
+            // Process each item in the array
+            data.kind_of_talk.forEach(item => {
+                item.split(',').map(type => type.trim()).forEach(type => {
+                    if (type === "Talk from Industry") {
+                        interestSelect.value = document.getElementById('industryTalk').value;
+                    } else if (type === "COM Founder's Club Talk") {
+                        interestSelect.value = document.getElementById('foundersTalk').value;
+                    }
+                });
+            });
 
             console.log("Interest set based on kind of talk:", interestSelect.value);
         })
@@ -220,26 +223,25 @@ function checkStatus(postId) {
         .then(response => response.json())
         .then(response => {
             const data = response.data; 
+            console.log('Checking status for:', data.kind_of_talk);
 
-            // Check checkboxes based on 'kind_of_talk' array
-            if (data.kind_of_talk) {
-                if (data.kind_of_talk.includes("Talk to 1st year students")) {
-                    document.getElementById('1stYear').checked = true;
-                    // document.getElementById('roleStudent').checked = true;
-                }
-                if (data.kind_of_talk.includes("Talk to 2nd year students")) {
-                    document.getElementById('2ndYear').checked = true;
-                    // document.getElementById('roleStudent').checked = true;
-                }
-                if (data.kind_of_talk.includes("Talk to 3rd year students")) {
-                    document.getElementById('3rdYear').checked = true;
-                    // document.getElementById('roleStudent').checked = true;
-                }
-                if (data.kind_of_talk.includes("Talk to MSc students")) {
-                    document.getElementById('MSc').checked = true;
-                    // document.getElementById('roleStudent').checked = true;
-                }
-            }
+            // Process each item in the array
+            data.kind_of_talk.forEach(item => {
+                item.split(',').map(type => type.trim()).forEach(type => {
+                    if (type === "Talk to 1st year students") {
+                        document.getElementById('1stYear').checked = true;
+                    }
+                    if (type === "Talk to 2nd year students") {
+                        document.getElementById('2ndYear').checked = true;
+                    }
+                    if (type === "Talk to 3rd year students") {
+                        document.getElementById('3rdYear').checked = true;
+                    }
+                    if (type === "Talk to MSc students") {
+                        document.getElementById('MSc').checked = true;
+                    }
+                });
+            });
         })
         .catch(error => {
             console.error('Error fetching post details:', error);
