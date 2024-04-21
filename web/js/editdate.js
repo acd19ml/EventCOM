@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => {
             if (response.ok) {
-                return response.json();  // 处理成功的响应
+                return response.json();  
             } else if (response.status === 401) {
                 alert('Your session has expired Please click here to log in again.');
                 window.location.href = '/login.html';  // 未登录，重定向到登录页面
@@ -219,10 +219,10 @@ function updateDate(dateId, date, detail) {
     })
     .then(response => {
         if (response.ok) {
-            return response.json();  // 处理成功的响应
+            return response.json();  
         } else if (response.status === 401) {
             alert('Your session has expired Please click here to log in again.');
-            window.location.href = '/login.html';  // 未登录，重定向到登录页面
+            window.location.href = '/login.html'; 
         } else {
             throw new Error('Something went wrong');
         }

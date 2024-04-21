@@ -1,17 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     fetchAttendees();
-
-    document.getElementById('clearStaffs').addEventListener('click', function() {
-        if (confirm('Are you sure you want to delete all staff members?')) {
-            deleteAttendeesByRole('Staff');
-        }
-    });
-
-    document.getElementById('clearStudents').addEventListener('click', function() {
-        if (confirm('Are you sure you want to delete all students?')) {
-            deleteAttendeesByRole('Student');
-        }
-    });
 });
 
 function fetchAttendees() {
@@ -22,7 +10,16 @@ function fetchAttendees() {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            return response.json();  
+        } else if (response.status === 401) {
+            alert('Your session has expired Please click here to log in again.');
+            window.location.href = '/login.html';            
+        } else {
+            throw new Error('Something went wrong');
+        }
+    })
     .then(data => {
         // Check the response structure and extract the attendees array
         if (data.status === 'success' && Array.isArray(data.data)) {
@@ -74,26 +71,12 @@ function deleteAttendee(id) {
             if (response.ok) {
                 alert('Attendee deleted successfully');
                 fetchAttendees(); // Refresh the list
+            } else if (response.status === 401) {
+                alert('Your session has expired Please click here to log in again.');
+                window.location.href = '/login.html';            
             } else {
                 response.text().then(text => alert(text)); // Display error message from server
             }
         }).catch(error => console.error('Error deleting attendee:', error));
     }
 }
-
-
-
-// function deleteAttendeesByRole(role) {
-//     fetch(`http://localhost:8000/api/attendees/deleteByRole/${role}`, {
-//         method: 'DELETE',
-//         credentials: 'include',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         }
-//     }).then(response => {
-//         if (response.ok) {
-//             alert(`${role}s deleted successfully`);
-//             fetchAttendees(); // Refresh the list
-//         }
-//     }).catch(error => console.error(`Error deleting ${role}s:`, error));
-// }

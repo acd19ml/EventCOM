@@ -18,10 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
           })
       .then(response => {
             if (response.ok) {
-                return response.json();  // 处理成功的响应
+                return response.json();  
             } else if (response.status === 401) {
                 alert('Your session has expired Please click here to log in again.');
-                window.location.href = '/login.html';  // 未登录，重定向到登录页面            
+                window.location.href = '/login.html';            
             } else {
                 throw new Error('Something went wrong');
             }
@@ -244,10 +244,14 @@ document.body.addEventListener('change', function(e) {
             body: JSON.stringify(updateData)
         })
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            if (response.ok) {
+                return response.json();  
+            } else if (response.status === 401) {
+                alert('Your session has expired Please click here to log in again.');
+                window.location.href = '/login.html';            
+            } else {
+                throw new Error('Something went wrong');
             }
-            return response.json();
         })
         .then(data => {
             console.log('Todos updated:', data);
@@ -305,7 +309,16 @@ document.getElementById('editPostForm').addEventListener('submit', function(e) {
         },
         body: JSON.stringify(updatedData),
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            return response.json();  
+        } else if (response.status === 401) {
+            alert('Your session has expired Please click here to log in again.');
+            window.location.href = '/login.html';            
+        } else {
+            throw new Error('Something went wrong');
+        }
+    })
     .then(data => {
         if (data.status === 'fail') {
             throw new Error(data.message);
@@ -411,7 +424,16 @@ function updatePostStatus(postId, newStatus) {
         },
         body: JSON.stringify({ status: newStatus }),
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            return response.json();  
+        } else if (response.status === 401) {
+            alert('Your session has expired Please click here to log in again.');
+            window.location.href = '/login.html';            
+        } else {
+            throw new Error('Something went wrong');
+        }
+    })
     .then(data => {
         console.log(`Post status updated to ${newStatus}:`, data);
 
@@ -437,13 +459,17 @@ function deletePost(postId) {
         credentials: 'include',
     })
     .then(response => {
-        // Check if the status code is 204 No Content
-        if (response.status === 204) {
+        if (response.ok) {
+            return response.json();  
+        } else if (response.status === 401) {
+            alert('Your session has expired Please click here to log in again.');
+            window.location.href = '/login.html';            
+        } else if (response.status === 204) {
             console.log('Post deleted successfully');
             removePostFromDOM(postId); // Remove post from DOM after successful deletion
-            return null; // Since no content is returned, null or an empty object is returned here.
+            return null;
         } else {
-            return response.json(); // If the response is not 204, try parsing as JSON
+            throw new Error('Something went wrong');
         }
     })
     .catch(error => console.error('Error deleting post:', error));
@@ -540,13 +566,16 @@ function loadTalks() {
             body: JSON.stringify(data),
         })
         .then(response => {
-            if (!response.ok) {
-                // If there's an error, convert it to JSON and throw it
+            if (response.ok) {
+                return response.json();  
+            } else if (response.status === 401) {
+                alert('Your session has expired Please click here to log in again.');
+                window.location.href = '/login.html';            
+            } else {
                 return response.json().then(err => {
                     throw new Error(`HTTP error! Status: ${response.status}, Message: ${JSON.stringify(err)}`);
                 });
             }
-            return response.json();
         })
         .then(data => {
             console.log('Success:', data);
@@ -578,10 +607,14 @@ function updateTalk(talkId) {
         body: JSON.stringify(data),
     })
     .then(response => {
-        if (!response.ok) {
+        if (response.ok) {
+            return response.json();  
+        } else if (response.status === 401) {
+            alert('Your session has expired Please click here to log in again.');
+            window.location.href = '/login.html';            
+        } else {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.json();
     })
     .then(data => {
         console.log('Talk updated successfully:', data);
@@ -604,6 +637,9 @@ function deleteTalk(talkId) {
             // Check if the response has content
             if (response.status === 204 || response.headers.get("Content-Length") === "0") {
                 return null;  // No content to process
+            } else if (response.status === 401) {
+                alert('Your session has expired Please click here to log in again.');
+                window.location.href = '/login.html';            
             } else {
                 return response.json();  // Process JSON if available
             }
@@ -667,7 +703,16 @@ function fetchAttendeesCount(postId, index) {
             'Content-Type': 'application/json',
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            return response.json();  
+        } else if (response.status === 401) {
+            alert('Your session has expired Please click here to log in again.');
+            window.location.href = '/login.html';            
+        } else {
+            throw new Error('Something went wrong');
+        }
+    })
     .then(data => {
         const numAttendees = data.results; // Assuming 'results' is the count of attendees
         const attendeeCountContainer = document.querySelector(`#attendee-count-container-${index}`);
