@@ -660,7 +660,7 @@ function fetchPostData(postId) {
 
 
 function fetchAttendeesCount(postId, index) {
-    fetch(`http://localhost:8000/api/attendances/?postId=${postId}`,{
+    fetch(`http://localhost:8000/api/attendances/post/${postId}`,{
         method:`GET`,
         credentials:`include`,
         headers: {

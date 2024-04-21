@@ -66,7 +66,7 @@ func (dc *DateController) FindDateById(ctx *gin.Context) {
 
 func (dc *DateController) FindDates(ctx *gin.Context) {
 	page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
-	limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "10"))
+	limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "100"))
 
 	dates, err := dc.dateService.FindDates(page, limit)
 	if err != nil {

@@ -66,7 +66,7 @@ func (dc *AttendanceController) FindAttendanceById(ctx *gin.Context) {
 
 func (dc *AttendanceController) FindAttendances(ctx *gin.Context) {
 	page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
-	limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "10"))
+	limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "1000"))
 
 	attendances, err := dc.attendanceService.FindAttendances(page, limit)
 	if err != nil {
@@ -75,6 +75,20 @@ func (dc *AttendanceController) FindAttendances(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "success", "results": len(attendances), "data": attendances})
+}
+
+func (dc *AttendanceController) FindAttendanceByPostId(ctx *gin.Context) {
+    postId := ctx.Param("postId")
+    page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
+    limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "1000"))
+
+    attendances, err := dc.attendanceService.FindAttendanceByPostId(postId, page, limit)
+    if err != nil {
+        ctx.JSON(http.StatusBadGateway, gin.H{"status": "fail", "message": err.Error()})
+        return
+    }
+
+    ctx.JSON(http.StatusOK, gin.H{"status": "success", "results": len(attendances), "data": attendances})
 }
 
 func (dc *AttendanceController) DeleteAttendance(ctx *gin.Context) {

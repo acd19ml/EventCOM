@@ -105,7 +105,7 @@ func (pc *PostController) FindPostById(ctx *gin.Context) {
 
 func (pc *PostController) FindPosts(ctx *gin.Context) {
     var page = ctx.DefaultQuery("page", "1")
-    var limit = ctx.DefaultQuery("limit", "100")
+    var limit = ctx.DefaultQuery("limit", "1000")
 
 	// userID, exists := ctx.Get("userID")
     // if !exists {

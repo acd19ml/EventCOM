@@ -20,7 +20,8 @@ func (r *AttendanceRouteController) AttendanceRoute(rg *gin.RouterGroup, userSer
 	router.POST("/", r.attendanceController.CreateAttendance)
 	router.Use(middleware.DeserializeUser(userService))
 	router.GET("/", r.attendanceController.FindAttendances)
-	router.GET("/:attendanceId", r.attendanceController.FindAttendanceById)
+	router.GET("/post/:postId", r.attendanceController.FindAttendanceByPostId)
+	router.GET("/id/:attendanceId", r.attendanceController.FindAttendanceById)
 	router.PATCH("/:attendanceId", r.attendanceController.UpdateAttendance)
 	router.DELETE("/:attendanceId", r.attendanceController.DeleteAttendance)
 }

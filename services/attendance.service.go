@@ -7,5 +7,6 @@ type AttendanceService interface {
 	UpdateAttendance(string, *models.UpdateAttendance) (*models.DBAttendance, error)
 	FindAttendanceById(string) (*models.DBAttendance, error)
 	FindAttendances(page int, limit int) ([]*models.DBAttendance, error)
+	FindAttendanceByPostId(postId string, page, limit int) ([]*models.DBAttendance, error)
 	DeleteAttendance(string) error
 }

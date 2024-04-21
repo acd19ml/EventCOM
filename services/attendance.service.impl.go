@@ -74,6 +74,53 @@ func (d *AttendanceServiceImpl) FindAttendanceById(id string) (*models.DBAttenda
 	return attendance, nil
 }
 
+func (p *AttendanceServiceImpl) FindAttendanceByPostId(postId string, page int, limit int) ([]*models.DBAttendance, error) {
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+
+	skip := (page - 1) * limit
+
+	opt := options.FindOptions{}
+	opt.SetLimit(int64(limit))
+	opt.SetSkip(int64(skip))
+	opt.SetSort(bson.M{"created_at": -1}) // Assuming there is a 'created_at' field you want to sort by
+
+	query := bson.M{"postId": postId} // The filter to find attendances by postId
+
+	cursor, err := p.attendanceCollection.Find(p.ctx, query, &opt)
+	if err != nil {
+		return nil, err
+	}
+
+	defer cursor.Close(p.ctx)
+
+	var attendances []*models.DBAttendance
+
+	for cursor.Next(p.ctx) {
+		attendance := &models.DBAttendance{}
+		err := cursor.Decode(attendance)
+		if err != nil {
+			return nil, err
+		}
+		attendances = append(attendances, attendance)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	if len(attendances) == 0 {
+		return []*models.DBAttendance{}, nil
+	}
+
+	return attendances, nil
+}
+
+
 func (p *AttendanceServiceImpl) FindAttendances(page int, limit int) ([]*models.DBAttendance, error) {
 	if page == 0 {
 		page = 1
