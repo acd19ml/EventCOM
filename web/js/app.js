@@ -222,6 +222,8 @@ document.body.addEventListener('click', function(e) {
 document.body.addEventListener('change', function(e) {
     if (e.target.classList.contains('todo-checkbox')) {
         const postId = e.target.dataset.postid; // 获取 postId
+        const field = e.target.dataset.field;
+        const isChecked = e.target.checked;
         // 构造所有复选框的当前状态
         const updateData = {
             title_proposed: document.querySelector(`input[data-postid="${postId}"][data-field="title_proposed"]`).checked,
@@ -247,11 +249,35 @@ document.body.addEventListener('change', function(e) {
             }
             return response.json();
         })
-        .then(data => console.log('Todos updated:', data))
+        .then(data => {
+            console.log('Todos updated:', data);
+
+            // Display Toasts for specific conditions
+            if (field === "time_confirmed" && isChecked) {
+                showToast("Time Confirmed", "Please edit the Dates in following format: Thurs, 16th March 5-6pm");
+            } else if (field === "venue_booked" && isChecked) {
+                showToast("Venue Booked", "Please edit to add the Location");
+            }
+        })
         .catch(error => console.error('Error updating todos:', error));
     }
 });
 
+function showToast(title, message) {
+    const toastHTML = `
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">${title}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">${message}</div>
+        </div>
+    `;
+    const toastContainer = document.getElementById('toastContainer');
+    toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+    const toastElement = new bootstrap.Toast(toastContainer.lastElementChild);
+    toastElement.show();
+}
 
 document.getElementById('editPostForm').addEventListener('submit', function(e) {
     e.preventDefault(); // Prevent the default form submission
