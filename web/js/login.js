@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.status === "success") {
 
                 console.log('Login success');
-                alert('You successfully logged in');
                 window.location.href = '/'; 
             } else {
 

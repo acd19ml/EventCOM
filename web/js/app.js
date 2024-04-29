@@ -164,6 +164,7 @@ document.body.addEventListener('click', function(e) {
     const postId = e.target.getAttribute('data-id');
     if (e.target.classList.contains('delete-btn')) {
         deletePost(postId);
+        window.location.reload();
     } else if (e.target.classList.contains('progress-btn')) {
         updatePostStatus(postId, 'in progress');
         window.location.reload();
@@ -176,6 +177,7 @@ document.body.addEventListener('click', function(e) {
         }
     } else if (e.target.classList.contains('interested-btn')) {
         updatePostStatus(postId, 'interested');
+        window.location.reload();
     } else if (e.target.classList.contains('new-talk-btn')) {
         createNewTalkBasedOnPost(postId);
     } else if (e.target.classList.contains('edit-btn')) {
@@ -465,7 +467,7 @@ function deletePost(postId) {
             alert('Your session has expired Please click here to log in again.');
             window.location.href = '/login.html';            
         } else if (response.status === 204) {
-            console.log('Post deleted successfully');
+            console.log('Talk deleted successfully');
             removePostFromDOM(postId); // Remove post from DOM after successful deletion
             return null;
         } else {

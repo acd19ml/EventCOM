@@ -27,10 +27,12 @@ document.getElementById('add-event-form').addEventListener('submit', function(e)
     })
     .then(data => {
         console.log('Event added:', data);
+        alert('Talk added successfully.');
+        window.location.href = '/'; 
 
     })
     .catch(error => {
         console.error('Error adding event:', error);
-
+        alert('Failed to add event. Please try again.');
     });
 });

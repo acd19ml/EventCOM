@@ -20,12 +20,17 @@
         .content {
             margin-top: 20px;
         }
+        .pre-formatted-content {
+            white-space: pre-wrap; /* 保持空格和格式，但在必要时进行换行 */
+            word-wrap: break-word; /* 确保单词在容器边界时可以断行 */
+            overflow-wrap: break-word; /* 同上，更现代的属性名称 */
+        }
     </style>
 </head>
 <body>
     <div class="email-container">
         <div class="content">
-            <div style="white-space: pre;">{{ .Content }}</div>
+            <div class="pre-formatted-content">{{ .Content }}</div>
         </div>
         <table
               role="presentation"
