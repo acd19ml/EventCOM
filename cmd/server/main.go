@@ -96,10 +96,8 @@ func init() {
 
 	// Connect to Redis
 
-	// 假设config已经被正确加载，config.RedisUri包含了完整的Redis URL
 	redisURI := config.RedisUri
 
-	// 解析URI以提取主机名和端口
 	u, err := url.Parse(redisURI)
 	if err != nil {
 		log.Fatalf("Failed to parse REDIS_CLOUD_URL: %v", err)
@@ -107,8 +105,8 @@ func init() {
 
 	password, _ := u.User.Password()
 	redisclient = redis.NewClient(&redis.Options{
-		Addr:     u.Host,   // 使用解析出的主机名和端口
-		Password: password, // 使用从URL中提取的密码
+		Addr:     u.Host,   
+		Password: password,
 	})
 
 	// redisclient = redis.NewClient(&redis.Options{

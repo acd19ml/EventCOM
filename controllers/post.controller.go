@@ -181,14 +181,12 @@ func (pc *PostController) SendEmailToGroup(ctx *gin.Context) {
         return
     }
 
-    // 创建邮件数据结构
     emailData := &utils.GroupEmailData{
         Subject: req.Subject,
         Content: req.Content,
         URL:     req.URL,
     }
 
-    // 调用邮件发送函数
     if err := utils.SendGroupEmail(req.Recipients, emailData, "templates/groupEmail.html"); err != nil {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send email"})
         return
